@@ -1,0 +1,256 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Seeker design tokens — pure black and white.
+
+   There is no hue anywhere in this file. Everything is a value on a single
+   grey ramp, which means state can no longer be signalled by colour. It is
+   signalled instead by:
+
+     - lightness of the fill  (darker fill = louder state, in light mode)
+     - contrast of the text
+     - the words and symbols the components already render (pass/fail, ✓/✗,
+       yes/no, skipped/matched)
+
+   Dark mode is the same ramp inverted: louder states get *lighter* fills.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --bg: #ffffff;
+  --bg-raised: #ffffff;
+  --bg-sunken: #f4f4f4;
+  --bg-code: #f7f7f7;
+  --border: #e3e3e3;
+  --border-strong: #8f8f8f;
+
+  --text: #000000;
+  --text-muted: #525252;
+  --text-faint: #656565;
+
+  --accent: #000000;
+  --accent-soft: #e8e8e8;
+  --accent-text: #000000;
+
+  /* State fills, lightest (calm) to darkest (loud). */
+  --ok: #111111;
+  --ok-soft: #f2f2f2;
+  --info: #1f1f1f;
+  --info-soft: #ebebeb;
+  --warn: #0d0d0d;
+  --warn-soft: #dbdbdb;
+  --bad: #000000;
+  --bad-soft: #c6c6c6;
+
+  /* Bars and chart marks need to differ from each other at a glance, so they
+     get their own ramp rather than reusing the text colours above. */
+  --bar-muted: #cfcfcf;
+  --bar-ok: #9c9c9c;
+  --bar-info: #757575;
+  --bar-warn: #4a4a4a;
+  --bar-bad: #111111;
+  --bar-accent: #000000;
+
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 16px rgb(0 0 0 / 0.05);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono-stack), ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000;
+    --bg-raised: #0d0d0d;
+    --bg-sunken: #060606;
+    --bg-code: #0a0a0a;
+    --border: #262626;
+    --border-strong: #5e5e5e;
+
+    --text: #ffffff;
+    --text-muted: #a3a3a3;
+    --text-faint: #8f8f8f;
+
+    --accent: #ffffff;
+    --accent-soft: #232323;
+    --accent-text: #ffffff;
+
+    --ok: #f0f0f0;
+    --ok-soft: #171717;
+    --info: #dcdcdc;
+    --info-soft: #1c1c1c;
+    --warn: #f7f7f7;
+    --warn-soft: #262626;
+    --bad: #ffffff;
+    --bad-soft: #333333;
+
+    --bar-muted: #3a3a3a;
+    --bar-ok: #6b6b6b;
+    --bar-info: #8f8f8f;
+    --bar-warn: #bdbdbd;
+    --bar-bad: #ebebeb;
+    --bar-accent: #ffffff;
+
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.6), 0 6px 20px rgb(0 0 0 / 0.45);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #000000;
+  --bg-raised: #0d0d0d;
+  --bg-sunken: #060606;
+  --bg-code: #0a0a0a;
+  --border: #262626;
+  --border-strong: #5e5e5e;
+
+  --text: #ffffff;
+  --text-muted: #a3a3a3;
+  --text-faint: #8f8f8f;
+
+  --accent: #ffffff;
+  --accent-soft: #232323;
+  --accent-text: #ffffff;
+
+  --ok: #f0f0f0;
+  --ok-soft: #171717;
+  --info: #dcdcdc;
+  --info-soft: #1c1c1c;
+  --warn: #f7f7f7;
+  --warn-soft: #262626;
+  --bad: #ffffff;
+  --bad-soft: #333333;
+
+  --bar-muted: #3a3a3a;
+  --bar-ok: #6b6b6b;
+  --bar-info: #8f8f8f;
+  --bar-warn: #bdbdbd;
+  --bar-bad: #ebebeb;
+  --bar-accent: #ffffff;
+
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.6), 0 6px 20px rgb(0 0 0 / 0.45);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-raised: var(--bg-raised);
+  --color-sunken: var(--bg-sunken);
+  --color-code: var(--bg-code);
+  --color-edge: var(--border);
+  --color-edge-strong: var(--border-strong);
+  --color-ink: var(--text);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-faint);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-text: var(--accent-text);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* Scrollbars that do not fight the theme. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 6px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Any wide content scrolls inside its own box; the page never scrolls sideways. */
+.scroll-x {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+input[type="range"] {
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--border-strong);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg-raised);
+  box-shadow: 0 0 0 1px var(--border-strong);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg-raised);
+  cursor: pointer;
+}
+
+/* Focus is drawn with the ink colour, since there is no accent hue to use. */
+:where(a, button, input, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+@keyframes seeker-pulse {
+  0% { opacity: 0.35; }
+  50% { opacity: 1; }
+  100% { opacity: 0.35; }
+}
+.pulse {
+  animation: seeker-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes seeker-fade-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: none; }
+}
+.fade-in {
+  animation: seeker-fade-in 0.18s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .pulse, .fade-in { animation: none; }
+  * { transition-duration: 0.01ms !important; }
+}
