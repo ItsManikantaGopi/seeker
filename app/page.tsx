@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CHAPTERS, PARTS, QUESTION_TO_STRUCTURE, ROADMAP } from "@/lib/chapters";
 import { CORPUS } from "@/lib/seeker/corpus";
+import { HomePipelineViz } from "@/components/home-pipeline-viz";
 
 const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII"];
 
@@ -8,8 +9,22 @@ function chapterHref(number: number): string {
   return `/ch/${CHAPTERS.find((c) => c.number === number)?.slug ?? ""}`;
 }
 
-const PIPELINE_INDEX = ["Documents", "Analysis", "Terms", "Term dictionary", "Inverted index", "Point index", "Segments"];
-const PIPELINE_QUERY = ["Query", "Parse & analyze", "Candidate retrieval", "Filtering", "BM25 scoring", "Top K", "Fetch"];
+// Part color accent (used for left border of part cards)
+const PART_ACCENT: Record<number, string> = {
+  1: "var(--vis-index)",
+  2: "var(--vis-index)",
+  3: "var(--vis-query)",
+  4: "var(--vis-query)",
+  5: "var(--vis-query)",
+  6: "var(--vis-index)",
+  7: "var(--vis-index)",
+  8: "var(--vis-neutral)",
+  9: "var(--vis-neutral)",
+  10: "var(--vis-neutral)",
+  11: "var(--vis-neutral)",
+  12: "var(--vis-neutral)",
+  13: "var(--vis-neutral)",
+};
 
 export default function Home() {
   return (
@@ -63,76 +78,74 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pipeline */}
+      {/* Animated pipeline visualization */}
       <section className="mb-12">
         <h2 className="mb-1 text-[19px] font-semibold tracking-tight text-ink">The two jobs</h2>
         <p className="mb-5 max-w-[62ch] text-[13.5px] leading-relaxed text-muted">
           A search engine builds structures that make retrieval fast, then uses those structures to find and
-          rank documents. Everything in the book sits on one side of that line or the other.
+          rank documents. Click any stage to jump to its chapter — hover to see what it does.
         </p>
-        <div className="grid gap-4 lg:grid-cols-2">
-          {[
-            { title: "Build structures that make retrieval fast", stages: PIPELINE_INDEX, tone: "info" },
-            { title: "Use them to find and rank", stages: PIPELINE_QUERY, tone: "accent" },
-          ].map((column) => (
-            <div key={column.title} className="rounded-xl border border-edge bg-raised p-4">
-              <div className="mb-3 text-[12px] font-semibold uppercase tracking-wider text-faint">
-                {column.title}
-              </div>
-              <div className="space-y-1">
-                {column.stages.map((stage, i) => (
-                  <div key={stage}>
-                    <div
-                      className={`rounded-lg px-3 py-1.5 font-mono text-[12.5px] ${
-                        column.tone === "accent" ? "bg-accent-soft text-accent-text" : "bg-sunken text-muted"
-                      }`}
-                    >
-                      {stage}
-                    </div>
-                    {i < column.stages.length - 1 && (
-                      <div className="py-[1px] text-center font-mono text-[9px] text-faint">↓</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Client component handles the animated pipeline */}
+        <HomePipelineViz chapters={CHAPTERS} />
       </section>
 
-      {/* Question → structure */}
+      {/* Question → structure — visual cards instead of table */}
       <section className="mb-12">
         <h2 className="mb-1 text-[19px] font-semibold tracking-tight text-ink">
           There is not one search data structure
         </h2>
         <p className="mb-5 max-w-[62ch] text-[13.5px] leading-relaxed text-muted">
-          This table is the spine of the whole book. Different questions need different structures, and
-          confusing them is where most search bugs come from.
+          Different questions need different structures. This is the spine of the whole book.
         </p>
-        <div className="scroll-x rounded-xl border border-edge">
-          <table className="w-full min-w-max border-collapse">
-            <thead>
-              <tr className="border-b border-edge bg-sunken">
-                <th className="px-3 py-2 text-left text-[10.5px] font-medium uppercase tracking-wider text-faint">Question</th>
-                <th className="px-3 py-2 text-left text-[10.5px] font-medium uppercase tracking-wider text-faint">Structure</th>
-                <th className="px-3 py-2 text-right text-[10.5px] font-medium uppercase tracking-wider text-faint">Chapter</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--border)]">
-              {QUESTION_TO_STRUCTURE.map((row) => (
-                <tr key={row.question} className="hover:bg-sunken/60">
-                  <td className="px-3 py-2 text-[13px] text-ink">{row.question}</td>
-                  <td className="px-3 py-2 font-mono text-[12.5px] text-accent-text">{row.structure}</td>
-                  <td className="px-3 py-2 text-right">
-                    <Link href={chapterHref(row.chapter)} className="text-[12px] text-muted underline underline-offset-2 hover:text-ink">
-                      {row.chapter}
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {QUESTION_TO_STRUCTURE.map((row, i) => {
+            // Assign tone based on chapter range
+            const tone =
+              row.chapter <= 7
+                ? "index"
+                : row.chapter <= 15
+                  ? "query"
+                  : "neutral";
+            const borderColor = {
+              index:   "var(--vis-index)",
+              query:   "var(--vis-query)",
+              neutral: "var(--border-strong)",
+            }[tone];
+            const bgColor = {
+              index:   "var(--vis-index-soft)",
+              query:   "var(--vis-query-soft)",
+              neutral: "var(--bg-sunken)",
+            }[tone];
+            const textColor = {
+              index:   "var(--vis-index-text)",
+              query:   "var(--vis-query-text)",
+              neutral: "var(--text-muted)",
+            }[tone];
+            return (
+              <Link
+                key={row.question}
+                href={chapterHref(row.chapter)}
+                className="fade-in group rounded-r-xl border border-edge py-3 pl-4 pr-3 transition-colors hover:border-edge-strong"
+                style={{
+                  borderLeftColor: borderColor,
+                  borderLeftWidth: 3,
+                  background: bgColor,
+                  animationDelay: `${i * 40}ms`,
+                }}
+              >
+                <div className="text-[12.5px] text-ink">{row.question}</div>
+                <div className="mt-1 font-mono text-[11.5px] font-semibold" style={{ color: textColor }}>
+                  {row.structure}
+                </div>
+                <div className="mt-1 font-mono text-[10.5px] opacity-60" style={{ color: textColor }}>
+                  ch {row.chapter}
+                </div>
+              </Link>
+            );
+          })}
         </div>
+
         <p className="mt-4 rounded-lg border-l-[3px] border-l-[var(--accent)] border-edge bg-accent-soft px-3 py-2 text-[13px] leading-relaxed text-accent-text">
           FST is not postings. BKD is not a text dictionary. BM25 does not find documents; it scores candidates.
         </p>
@@ -144,11 +157,24 @@ export default function Home() {
         <div className="space-y-5">
           {PARTS.map((part) => {
             const chapters = CHAPTERS.filter((c) => c.partNumber === part.number);
+            const accent = PART_ACCENT[part.number] ?? "var(--border-strong)";
             return (
-              <div key={part.number} className="rounded-xl border border-edge bg-raised p-4">
+              <div
+                key={part.number}
+                className="rounded-xl border border-edge bg-raised p-4"
+                style={{ borderLeftColor: accent, borderLeftWidth: 3 }}
+              >
                 <div className="mb-1 flex flex-wrap items-baseline gap-2">
-                  <span className="font-mono text-[12px] text-accent-text">{ROMAN[part.number]}</span>
+                  <span
+                    className="font-mono text-[12px] font-bold"
+                    style={{ color: accent === "var(--vis-index)" ? "var(--vis-index-text)" : accent === "var(--vis-query)" ? "var(--vis-query-text)" : "var(--text-faint)" }}
+                  >
+                    {ROMAN[part.number]}
+                  </span>
                   <h3 className="text-[15px] font-semibold tracking-tight text-ink">{part.title}</h3>
+                  <span className="ml-auto font-mono text-[11px] text-faint">
+                    {chapters.length} chapter{chapters.length !== 1 ? "s" : ""}
+                  </span>
                 </div>
                 <p className="mb-3 max-w-[76ch] text-[12.5px] leading-relaxed text-muted">{part.blurb}</p>
                 <div className="grid gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
@@ -162,7 +188,7 @@ export default function Home() {
                         <span className="font-mono text-[11px] tabular-nums text-faint">{chapter.number}</span>
                         <span className="text-[12.5px] font-medium leading-snug text-ink">{chapter.title}</span>
                       </div>
-                      <div className="mt-0.5 pl-6 font-mono text-[11px] leading-snug text-accent-text opacity-80">
+                      <div className="mt-0.5 pl-6 font-mono text-[11px] leading-snug" style={{ color: accent, opacity: 0.8 }}>
                         {chapter.structure}
                       </div>
                     </Link>
@@ -196,7 +222,7 @@ export default function Home() {
                 <tr key={row.stage} className="hover:bg-sunken/60">
                   <td className="px-3 py-1.5 font-mono text-[12px] text-faint">{row.stage}</td>
                   <td className="px-3 py-1.5 font-mono text-[12.5px] text-ink">{row.build}</td>
-                  <td className="px-3 py-1.5 font-mono text-[12.5px] text-accent-text">{row.replaceWith}</td>
+                  <td className="px-3 py-1.5 font-mono text-[12.5px]" style={{ color: "var(--vis-index-text)" }}>{row.replaceWith}</td>
                   <td className="px-3 py-1.5 text-right">
                     <Link href={chapterHref(row.chapter)} className="text-[12px] text-muted underline underline-offset-2 hover:text-ink">
                       {row.chapter}

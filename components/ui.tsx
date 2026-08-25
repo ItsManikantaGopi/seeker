@@ -472,6 +472,81 @@ export function TokenChip({
   );
 }
 
+export function VisualCard({
+  icon, title, children, tone = "neutral",
+}: {
+  icon?: ReactNode;
+  title: ReactNode;
+  children: ReactNode;
+  tone?: "index" | "query" | "neutral" | "ok" | "warn" | "bad";
+}) {
+  const borderColor = {
+    index:   "var(--vis-index)",
+    query:   "var(--vis-query)",
+    neutral: "var(--border-strong)",
+    ok:      "var(--ok)",
+    warn:    "var(--warn)",
+    bad:     "var(--bad)",
+  }[tone];
+  const bgColor = {
+    index:   "var(--vis-index-soft)",
+    query:   "var(--vis-query-soft)",
+    neutral: "var(--bg-sunken)",
+    ok:      "var(--ok-soft)",
+    warn:    "var(--warn-soft)",
+    bad:     "var(--bad-soft)",
+  }[tone];
+  return (
+    <div
+      className="fade-in rounded-r-xl border border-edge py-3 pl-4 pr-3"
+      style={{ borderLeftColor: borderColor, borderLeftWidth: 3, background: bgColor }}
+    >
+      {(icon || title) && (
+        <div className="mb-1.5 flex items-center gap-2">
+          {icon && <span className="text-[18px] leading-none">{icon}</span>}
+          <span className="text-[13px] font-semibold text-ink">{title}</span>
+        </div>
+      )}
+      <div className="text-[12.5px] leading-relaxed text-muted">{children}</div>
+    </div>
+  );
+}
+
+export function ConceptFlowStrip({
+  steps,
+}: {
+  steps: { label: string; sublabel?: string; tone?: "index" | "query" | "neutral" }[];
+}) {
+  const toneClasses = {
+    index:   { bg: "bg-[var(--vis-index-soft)]", border: "border-[var(--vis-index)]", text: "text-[var(--vis-index-text)]" },
+    query:   { bg: "bg-[var(--vis-query-soft)]", border: "border-[var(--vis-query)]", text: "text-[var(--vis-query-text)]" },
+    neutral: { bg: "bg-sunken", border: "border-edge", text: "text-muted" },
+  };
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      {steps.map((step, i) => {
+        const t = toneClasses[step.tone ?? "neutral"];
+        return (
+          <div key={i} className="flex items-center gap-1.5">
+            <div
+              className={`strip-slide rounded-lg border px-2.5 py-1.5 ${t.bg} ${t.border}`}
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
+              <div className={`text-[12px] font-semibold leading-tight ${t.text}`}>{step.label}</div>
+              {step.sublabel && (
+                <div className={`mt-0.5 font-mono text-[10px] opacity-70 ${t.text}`}>{step.sublabel}</div>
+              )}
+            </div>
+            {i < steps.length - 1 && (
+              <span className="font-mono text-[11px] text-faint">→</span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function EmptyState({ children }: { children: ReactNode }) {
   return (
     <div className="rounded-lg border border-dashed border-edge-strong px-4 py-6 text-center text-[12.5px] text-faint">

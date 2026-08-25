@@ -54,6 +54,19 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-mono-stack), ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+
+  /* Visual component accents — used ONLY inside mind-map / flow-diagram SVGs.
+     These are the only hues in the entire design system. */
+  --vis-index: #2563eb;      /* blue — index-side (building structures) */
+  --vis-index-soft: #dbeafe;
+  --vis-index-text: #1d4ed8;
+  --vis-query: #d97706;      /* amber — query-side (using structures) */
+  --vis-query-soft: #fef3c7;
+  --vis-query-text: #b45309;
+  --vis-neutral: #6b7280;    /* grey — shared / structural concepts */
+  --vis-neutral-soft: #f3f4f6;
+  --vis-neutral-text: #374151;
+  --vis-center: #111827;     /* near-black — central mind-map node */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -90,6 +103,18 @@
     --bar-accent: #ffffff;
 
     --shadow: 0 1px 2px rgb(0 0 0 / 0.6), 0 6px 20px rgb(0 0 0 / 0.45);
+
+    /* Visual accent overrides for dark mode */
+    --vis-index: #60a5fa;
+    --vis-index-soft: #1e3a5f;
+    --vis-index-text: #93c5fd;
+    --vis-query: #fbbf24;
+    --vis-query-soft: #451a03;
+    --vis-query-text: #fcd34d;
+    --vis-neutral: #9ca3af;
+    --vis-neutral-soft: #1f2937;
+    --vis-neutral-text: #d1d5db;
+    --vis-center: #f9fafb;
   }
 }
 
@@ -126,6 +151,18 @@
   --bar-accent: #ffffff;
 
   --shadow: 0 1px 2px rgb(0 0 0 / 0.6), 0 6px 20px rgb(0 0 0 / 0.45);
+
+  /* Visual accent overrides for explicit dark mode */
+  --vis-index: #60a5fa;
+  --vis-index-soft: #1e3a5f;
+  --vis-index-text: #93c5fd;
+  --vis-query: #fbbf24;
+  --vis-query-soft: #451a03;
+  --vis-query-text: #fcd34d;
+  --vis-neutral: #9ca3af;
+  --vis-neutral-soft: #1f2937;
+  --vis-neutral-text: #d1d5db;
+  --vis-center: #f9fafb;
 }
 
 @theme inline {
@@ -249,8 +286,61 @@ input[type="range"]::-moz-range-thumb {
   animation: seeker-fade-in 0.18s ease-out;
 }
 
+/* ----------------------------------------------------------------
+   Visual component animations — used by mind-map and flow-diagram
+   ---------------------------------------------------------------- */
+
+/* Node entrance: scale up from tiny with a slight overshoot */
+@keyframes node-pop {
+  0%   { opacity: 0; transform: scale(0.4); }
+  70%  { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.node-pop {
+  animation: node-pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Branch draw: stroke-dashoffset trick, applied via JS + inline style */
+@keyframes branch-draw {
+  from { stroke-dashoffset: var(--branch-len, 300); }
+  to   { stroke-dashoffset: 0; }
+}
+.branch-draw {
+  animation: branch-draw 0.5s ease-out forwards;
+}
+
+/* Flow arrow: repeating dash-march for the animated connection lines */
+@keyframes flow-march {
+  from { stroke-dashoffset: 24; }
+  to   { stroke-dashoffset: 0; }
+}
+.flow-march {
+  animation: flow-march 0.6s linear infinite;
+}
+
+/* Active node glow (filter-based, works on SVG elements) */
+@keyframes node-glow {
+  0%   { filter: drop-shadow(0 0 0px currentColor); }
+  50%  { filter: drop-shadow(0 0 6px currentColor); }
+  100% { filter: drop-shadow(0 0 0px currentColor); }
+}
+.node-glow {
+  animation: node-glow 1.6s ease-in-out infinite;
+}
+
+/* Slide-reveal for the concept flow strip pill rows */
+@keyframes strip-slide {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+.strip-slide {
+  animation: strip-slide 0.3s ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .pulse, .fade-in { animation: none; }
+  .pulse, .fade-in, .node-pop, .branch-draw, .flow-march, .node-glow, .strip-slide {
+    animation: none;
+  }
   * { transition-duration: 0.01ms !important; }
 }
