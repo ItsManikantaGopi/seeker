@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { CHAPTERS, chapterBySlug, PARTS } from "@/lib/chapters";
+import type { ConceptStep } from "@/components/part-mind-map";
 
 const PartMindMapPanel = dynamic(
   () => import("@/components/part-mind-map").then((m) => m.PartMindMapPanel),
@@ -15,11 +16,11 @@ const PartMindMapPanel = dynamic(
   },
 );
 
-export function PartMindMapPanelLoader({ slug }: { slug: string }) {
+export function PartMindMapPanelLoader({ slug, steps }: { slug: string; steps?: ConceptStep[] }) {
   const chapter = chapterBySlug(slug);
   if (!chapter) return null;
 
   const partChapters = CHAPTERS.filter((c) => c.partNumber === chapter.partNumber);
 
-  return <PartMindMapPanel chapter={chapter} partChapters={partChapters} />;
+  return <PartMindMapPanel chapter={chapter} partChapters={partChapters} steps={steps} />;
 }

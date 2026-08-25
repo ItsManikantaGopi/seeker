@@ -10,10 +10,19 @@ import { useState } from "react";
 import { MindMap, type MindMapData, type MindMapTone } from "@/components/mind-map";
 import type { Chapter } from "@/lib/chapters";
 
+/** One stage of a chapter's concept flow strip */
+export interface ConceptStep {
+  label: string;
+  sublabel?: string;
+  tone?: "index" | "query" | "neutral";
+}
+
 interface PartMindMapProps {
   chapter: Chapter;
   /** All chapters in the same part (used to show neighbors) */
   partChapters: Chapter[];
+  /** Optional concept-flow strip, rendered above the mind map when open */
+  steps?: ConceptStep[];
 }
 
 /**
@@ -28,7 +37,7 @@ function partTone(partNumber: number): MindMapTone {
   return "neutral";
 }
 
-export function PartMindMapPanel({ chapter, partChapters }: PartMindMapProps) {
+export function PartMindMapPanel({ chapter, partChapters, steps }: PartMindMapProps) {
   const [open, setOpen] = useState(false);
   const tone = partTone(chapter.partNumber);
 
@@ -79,11 +88,11 @@ export function PartMindMapPanel({ chapter, partChapters }: PartMindMapProps) {
         aria-expanded={open}
       >
         <div>
-          <div className="text-[13px] font-semibold text-ink">Concept mind map</div>
+          <div className="text-[13px] font-semibold text-ink">Concept overview</div>
           <div className="mt-0.5 text-[11.5px] text-muted">
             {open
               ? "Click any node to explore — click again to close"
-              : `See where ${chapter.structure} fits in the big picture`}
+              : "The concept flow, and how this chapter fits its part"}
           </div>
         </div>
         <div
@@ -97,6 +106,41 @@ export function PartMindMapPanel({ chapter, partChapters }: PartMindMapProps) {
 
       {open && (
         <div className="border-t border-edge px-4 pb-4 pt-3 fade-in">
+          {steps && steps.length > 0 && (
+            <div className="mb-3 flex flex-wrap items-center gap-1.5">
+              {steps.map((step, i) => {
+                const toneStyles = {
+                  index: { border: "var(--vis-index)", bg: "var(--vis-index-soft)", text: "var(--vis-index-text)" },
+                  query: { border: "var(--vis-query)", bg: "var(--vis-query-soft)", text: "var(--vis-query-text)" },
+                  neutral: { border: "var(--border-strong)", bg: "var(--bg-sunken)", text: "var(--text-muted)" },
+                }[step.tone ?? "neutral"];
+                return (
+                  <div key={i} className="flex items-center gap-1.5">
+                    <div
+                      className="strip-slide rounded-lg border px-2.5 py-1.5"
+                      style={{
+                        borderColor: toneStyles.border,
+                        background: toneStyles.bg,
+                        animationDelay: `${i * 60}ms`,
+                      }}
+                    >
+                      <div className="text-[12px] font-semibold leading-tight" style={{ color: toneStyles.text }}>
+                        {step.label}
+                      </div>
+                      {step.sublabel && (
+                        <div className="mt-0.5 font-mono text-[10px] opacity-70" style={{ color: toneStyles.text }}>
+                          {step.sublabel}
+                        </div>
+                      )}
+                    </div>
+                    {i < steps.length - 1 && (
+                      <span className="font-mono text-[11px] text-faint">→</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
           <div className="mb-3 flex flex-wrap gap-2">
             <span
               className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px]"

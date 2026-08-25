@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CHAPTERS, chapterBySlug, neighbours, PARTS } from "@/lib/chapters";
 import { LabLoader } from "@/components/labs/loader";
 import { PartMindMapPanelLoader } from "@/components/labs/part-mind-map-loader";
+import type { ConceptStep } from "@/components/part-mind-map";
 
 export function generateStaticParams() {
   return CHAPTERS.map((chapter) => ({ slug: chapter.slug }));
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 /** Map a chapter to 3–4 concept steps for the flow strip */
-function conceptSteps(partNumber: number): { label: string; sublabel?: string; tone?: "index" | "query" | "neutral" }[] {
+function conceptSteps(partNumber: number): ConceptStep[] {
   if (partNumber === 1) return [
     { label: "Documents", sublabel: "raw input", tone: "index" },
     { label: "Analysis", sublabel: "char/token/stem", tone: "index" },
@@ -101,7 +102,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
 
   return (
     <article className="mx-auto max-w-[1180px] px-4 py-6 lg:px-8 lg:py-8">
-      <header className="mb-6">
+      <header className="mb-5">
         <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-faint">
           <span>Part {chapter.partNumber} · {part.title}</span>
           <span aria-hidden>·</span>
@@ -114,79 +115,20 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
           {chapter.summary}
         </p>
 
-        {/* Concept flow strip */}
-        <div className="mt-4">
-          <div className="mb-2 text-[10.5px] font-semibold uppercase tracking-wider text-faint">
-            Concept flow
-          </div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {steps.map((step, i) => {
-              const toneStyles = {
-                index: { border: "var(--vis-index)", bg: "var(--vis-index-soft)", text: "var(--vis-index-text)" },
-                query: { border: "var(--vis-query)", bg: "var(--vis-query-soft)", text: "var(--vis-query-text)" },
-                neutral: { border: "var(--border-strong)", bg: "var(--bg-sunken)", text: "var(--text-muted)" },
-              }[step.tone ?? "neutral"];
-              return (
-                <div key={i} className="flex items-center gap-1.5">
-                  <div
-                    className="strip-slide rounded-lg border px-2.5 py-1.5"
-                    style={{
-                      borderColor: toneStyles.border,
-                      background: toneStyles.bg,
-                      animationDelay: `${i * 60}ms`,
-                    }}
-                  >
-                    <div className="text-[12px] font-semibold leading-tight" style={{ color: toneStyles.text }}>
-                      {step.label}
-                    </div>
-                    {step.sublabel && (
-                      <div className="mt-0.5 font-mono text-[10px] opacity-70" style={{ color: toneStyles.text }}>
-                        {step.sublabel}
-                      </div>
-                    )}
-                  </div>
-                  {i < steps.length - 1 && (
-                    <span className="font-mono text-[11px] text-faint">→</span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+        {/* The book's core pairing — the question and its structure — as one quiet line */}
+        <div className="mt-3 max-w-[76ch] rounded-r-lg border-l-[3px] border-l-[var(--accent)] bg-accent-soft px-3 py-2">
+          <p className="text-[12.5px] font-medium leading-relaxed text-accent-text">
+            {chapter.question} Answered by{" "}
+            <code className="font-mono">{chapter.structure}</code>.
+          </p>
+          <p className="mt-0.5 text-[12px] leading-relaxed text-accent-text opacity-75">
+            In this lab: {chapter.lab}
+          </p>
         </div>
-
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-lg border border-edge bg-raised px-3 py-2.5">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-faint">
-              The question
-            </div>
-            <div className="mt-1 text-[13px] leading-snug text-ink">{chapter.question}</div>
-          </div>
-          <div
-            className="rounded-lg border px-3 py-2.5"
-            style={{ borderColor: "var(--vis-index)", background: "var(--vis-index-soft)" }}
-          >
-            <div
-              className="text-[10px] font-semibold uppercase tracking-wider opacity-70"
-              style={{ color: "var(--vis-index-text)" }}
-            >
-              The structure responsible
-            </div>
-            <div
-              className="mt-1 font-mono text-[13px] leading-snug"
-              style={{ color: "var(--vis-index-text)" }}
-            >
-              {chapter.structure}
-            </div>
-          </div>
-        </div>
-
-        <p className="mt-3 text-[12.5px] italic leading-relaxed text-faint">
-          In this lab: {chapter.lab}
-        </p>
       </header>
 
-      {/* Interactive mind map panel (client-rendered) */}
-      <PartMindMapPanelLoader slug={slug} />
+      {/* Concept overview — collapsed by default; opens into flow strip + mind map */}
+      <PartMindMapPanelLoader slug={slug} steps={steps} />
 
       <div className="mt-6">
         <LabLoader slug={chapter.slug} />
