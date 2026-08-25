@@ -61,6 +61,47 @@ export function Stack({ children, gap = 4 }: { children: ReactNode; gap?: 2 | 3 
 }
 
 // ---------------------------------------------------------------------------
+// Card Primitives
+// ---------------------------------------------------------------------------
+
+export function Card({
+  children, tone = "raised", padding = "md", className = "", interactive = false, style,
+}: {
+  children: ReactNode;
+  tone?: "raised" | "sunken" | "accent";
+  padding?: "none" | "sm" | "md" | "lg";
+  className?: string;
+  interactive?: boolean;
+  style?: React.CSSProperties;
+}) {
+  const bg = tone === "sunken" ? "bg-sunken" : tone === "accent" ? "bg-accent-soft" : "bg-raised";
+  const p = { none: "p-0", sm: "p-3", md: "p-5", lg: "p-8" }[padding];
+  const interactiveStyles = interactive ? "transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-edge-strong" : "";
+  return (
+    <div className={`rounded-2xl border border-edge ${bg} shadow-[var(--shadow)] ${p} ${interactiveStyles} ${className}`} style={style}>
+      {children}
+    </div>
+  );
+}
+
+export function CardGrid({
+  children, cols = 3, gap = "md",
+}: {
+  children: ReactNode;
+  cols?: 1 | 2 | 3 | 4;
+  gap?: "sm" | "md" | "lg";
+}) {
+  const map = {
+    1: "grid-cols-1",
+    2: "grid-cols-1 md:grid-cols-2",
+    3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+    4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
+  } as const;
+  const gapMap = { sm: "gap-3", md: "gap-5", lg: "gap-8" };
+  return <div className={`grid ${map[cols]} ${gapMap[gap]}`}>{children}</div>;
+}
+
+// ---------------------------------------------------------------------------
 // Text bits
 // ---------------------------------------------------------------------------
 
