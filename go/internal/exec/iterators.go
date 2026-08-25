@@ -172,8 +172,10 @@ func (n *Not) Advance(target string) string {
 		}
 		blocked := n.exclude.Advance(doc)
 		if blocked == doc {
-			target = doc
-			continue // this doc is excluded; try the next include doc
+			// This doc is excluded; resume strictly after it. Advancing
+			// include to `doc` itself would return the same doc forever.
+			target = Successor(doc)
+			continue
 		}
 		n.cur = doc
 		return doc
@@ -205,18 +207,11 @@ func nextAfter(it Iterator, doc string) string {
 	return it.Advance(Successor(doc))
 }
 
-// Successor returns the smallest string greater than s. Callers use it to
-// step an iterator one document forward.
+// Successor returns the smallest string greater than s: appending a zero
+// byte. Callers use it to step an iterator strictly forward. (Incrementing
+// the last byte would jump over siblings - Successor("doc-1") = "doc-2" would
+// skip "doc-12" entirely.)
 func Successor(s string) string {
-	b := []byte(s)
-	i := len(b) - 1
-	for i >= 0 {
-		if b[i] < 0xff {
-			b[i]++
-			return string(b[:i+1])
-		}
-		i--
-	}
 	return s + "\x00"
 }
 

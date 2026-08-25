@@ -121,6 +121,9 @@ func (e *Engine) Explain(req *querydsl.SearchRequest, docID string) (*search.Exp
 	if err != nil {
 		return nil, err
 	}
+	// Bind BM25 statistics onto the scoring leaves; without this the
+	// explainers have no LengthOf callback and cannot score anything.
+	_ = res.Scorer(e.Index, search.DefaultBM25())
 	leaves := res.Leaves()
 	if len(leaves) == 0 {
 		return nil, fmt.Errorf("query has no scoring leaves to explain")

@@ -26,10 +26,12 @@ type entry struct {
 func NewPointIndex(field string, docs []model.Document) *PointIndex {
 	p := &PointIndex{field: field}
 	for _, d := range docs {
-		if v, ok := d.Number(field); ok {
-			p.values = append(p.values, entry{value: v, docID: d.ID})
-		} else if ts, ok := d.DateValue(field); ok {
+		// DateValue first: Number() would happily parse "2023" out of the
+		// date string "2023-01-15", turning timestamps into year numbers.
+		if ts, ok := d.DateValue(field); ok {
 			p.values = append(p.values, entry{value: ts, docID: d.ID})
+		} else if v, ok := d.Number(field); ok {
+			p.values = append(p.values, entry{value: v, docID: d.ID})
 		}
 	}
 	sort.Slice(p.values, func(i, j int) bool {

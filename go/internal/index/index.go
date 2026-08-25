@@ -107,6 +107,7 @@ func (ix *Index) Add(doc model.Document) error {
 			seen[t] = append(seen[t], pos)
 		}
 		sort.Strings(order)
+		var touched []*PostingsList
 		for _, term := range order {
 			positions := seen[term]
 			pl := fi.Terms[term]
@@ -121,6 +122,13 @@ func (ix *Index) Add(doc model.Document) error {
 			})
 			pl.DocFreq++
 			pl.TotalTerms += len(positions)
+			touched = append(touched, pl)
+		}
+		// Iterators binary-search postings by docID, so the list MUST stay
+		// sorted lexicographically even when documents arrive out of order
+		// (doc-12 sorts before doc-3 as strings).
+		for _, pl := range touched {
+			sort.Slice(pl.Postings, func(i, j int) bool { return pl.Postings[i].DocID < pl.Postings[j].DocID })
 		}
 	}
 	return nil
@@ -218,6 +226,10 @@ func (ix *Index) Lookup(field, term string) *PostingsList {
 		return nil
 	}
 	cp := *pl
+	// Deep-copy the postings slice: callers may mutate their view (or the
+	// TermScorer may hold it) without corrupting the live index.
+	cp.Postings = make([]Posting, len(pl.Postings))
+	copy(cp.Postings, pl.Postings)
 	return &cp
 }
 

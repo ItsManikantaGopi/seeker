@@ -81,9 +81,20 @@ func (s *Segment) Encode() ([]byte, error) {
 
 // Decode reads a segment back, verifying magic, version and CRC.
 func Decode(data []byte) (*Segment, error) {
-	if len(data) < 14 { // 4 magic + 2 version + 4 count + 4 crc minimum
-		return nil, errors.New("segment too short")
+	if len(data) < 14+8 { // header + crc + footer magic minimum
+		return nil, ErrChecksum
 	}
+	// Integrity first: validate the checksum and footer BEFORE trusting any
+	// parsed lengths. A corrupt count field would otherwise send the parser
+	// walking off the end of the buffer.
+	stored := binary.LittleEndian.Uint32(data[len(data)-8:])
+	if crc32.ChecksumIEEE(data[:len(data)-8]) != stored {
+		return nil, ErrChecksum
+	}
+	if tail := data[len(data)-4:]; !bytes.Equal(tail, Magic) {
+		return nil, errors.New("bad segment footer")
+	}
+
 	r := bytes.NewReader(data)
 	head := make([]byte, 4)
 	io.ReadFull(r, head)
@@ -121,16 +132,6 @@ func Decode(data []byte) (*Segment, error) {
 			return nil, err
 		}
 		s.docs = append(s.docs, SegmentDoc{ID: string(idBytes), Source: src})
-	}
-	// The CRC region runs from offset 0 to just before the stored checksum.
-	crcRegion := data[:len(data)-8]
-	stored := binary.LittleEndian.Uint32(data[len(data)-8:])
-	if crc32.ChecksumIEEE(crcRegion) != stored {
-		return nil, ErrChecksum
-	}
-	tail := data[len(data)-4:]
-	if !bytes.Equal(tail, Magic) {
-		return nil, errors.New("bad segment footer")
 	}
 	return s, nil
 }

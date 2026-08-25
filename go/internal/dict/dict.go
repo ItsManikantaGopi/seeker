@@ -101,8 +101,7 @@ func (t *Trie) WalkPrefix(prefix string, visit func(term string)) {
 	if node == nil {
 		return
 	}
-	var sb strings.Builder
-	node.walk(&sb, prefix, visit)
+	node.walk(prefix, visit)
 }
 
 func (t *Trie) descend(prefix string) *Trie {
@@ -116,16 +115,14 @@ func (t *Trie) descend(prefix string) *Trie {
 	return node
 }
 
-func (t *Trie) walk(sb *strings.Builder, current string, visit func(string)) {
+// walk carries the full accumulated term so nested suffixes keep their
+// ancestors' characters.
+func (t *Trie) walk(current string, visit func(string)) {
 	if t.isTerm {
 		visit(current)
 	}
 	for r, c := range t.children {
-		base := sb.String() // restore point for backtracking
-		sb.WriteRune(r)
-		c.walk(sb, sb.String(), visit)
-		sb.Reset()
-		sb.WriteString(base)
+		c.walk(current+string(r), visit)
 	}
 }
 

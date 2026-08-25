@@ -109,11 +109,29 @@ func (r *rangeValue) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// rawQueries accepts either one clause object or an array of them, the way
+// Elasticsearch does for bool sub-clauses.
+type rawQueries []json.RawMessage
+
+func (r *rawQueries) UnmarshalJSON(b []byte) error {
+	var arr []json.RawMessage
+	if err := json.Unmarshal(b, &arr); err == nil {
+		*r = arr
+		return nil
+	}
+	var one json.RawMessage
+	if err := json.Unmarshal(b, &one); err == nil {
+		*r = rawQueries{one}
+		return nil
+	}
+	return fmt.Errorf("bool sub-clause must be an object or array")
+}
+
 type boolBody struct {
-	Must    []json.RawMessage `json:"must,omitempty"`
-	Filter  []json.RawMessage `json:"filter,omitempty"`
-	Should  []json.RawMessage `json:"should,omitempty"`
-	MustNot []json.RawMessage `json:"must_not,omitempty"`
+	Must    rawQueries `json:"must,omitempty"`
+	Filter  rawQueries `json:"filter,omitempty"`
+	Should  rawQueries `json:"should,omitempty"`
+	MustNot rawQueries `json:"must_not,omitempty"`
 }
 
 // Decode turns request JSON into the AST.
