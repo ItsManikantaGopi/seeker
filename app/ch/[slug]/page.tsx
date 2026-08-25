@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { CHAPTERS, chapterBySlug, neighbours, PARTS } from "@/lib/chapters";
 import { LabLoader } from "@/components/labs/loader";
 import { PartMindMapPanelLoader } from "@/components/labs/part-mind-map-loader";
-import { Card, CardGrid } from "@/components/ui";
 
 export function generateStaticParams() {
   return CHAPTERS.map((chapter) => ({ slug: chapter.slug }));
@@ -101,24 +100,22 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
   const steps = conceptSteps(chapter.partNumber);
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-6 lg:px-8 lg:py-8 space-y-6">
-      
-      {/* Header Card */}
-      <Card tone="raised" padding="lg">
+    <article className="mx-auto max-w-[1180px] px-4 py-6 lg:px-8 lg:py-8">
+      <header className="mb-6">
         <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-faint">
           <span>Part {chapter.partNumber} · {part.title}</span>
           <span aria-hidden>·</span>
           <span>Chapter {chapter.number}</span>
         </div>
-        <h1 className="text-[26px] font-bold leading-tight tracking-tight text-ink lg:text-[36px]">
+        <h1 className="text-[26px] font-bold leading-tight tracking-tight text-ink lg:text-[32px]">
           {chapter.title}
         </h1>
-        <p className="mt-3 max-w-[70ch] text-[15px] leading-relaxed text-muted">
+        <p className="mt-2 max-w-[70ch] text-[14.5px] leading-relaxed text-muted">
           {chapter.summary}
         </p>
 
         {/* Concept flow strip */}
-        <div className="mt-6">
+        <div className="mt-4">
           <div className="mb-2 text-[10.5px] font-semibold uppercase tracking-wider text-faint">
             Concept flow
           </div>
@@ -132,7 +129,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
               return (
                 <div key={i} className="flex items-center gap-1.5">
                   <div
-                    className="strip-slide rounded-lg border px-3 py-2 shadow-sm"
+                    className="strip-slide rounded-lg border px-2.5 py-1.5"
                     style={{
                       borderColor: toneStyles.border,
                       background: toneStyles.bg,
@@ -143,7 +140,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
                       {step.label}
                     </div>
                     {step.sublabel && (
-                      <div className="mt-1 font-mono text-[10px] opacity-70" style={{ color: toneStyles.text }}>
+                      <div className="mt-0.5 font-mono text-[10px] opacity-70" style={{ color: toneStyles.text }}>
                         {step.sublabel}
                       </div>
                     )}
@@ -157,15 +154,15 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border border-edge bg-sunken px-4 py-3">
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-lg border border-edge bg-raised px-3 py-2.5">
             <div className="text-[10px] font-semibold uppercase tracking-wider text-faint">
               The question
             </div>
-            <div className="mt-1.5 text-[14px] leading-snug text-ink">{chapter.question}</div>
+            <div className="mt-1 text-[13px] leading-snug text-ink">{chapter.question}</div>
           </div>
           <div
-            className="rounded-xl border px-4 py-3 shadow-sm"
+            className="rounded-lg border px-3 py-2.5"
             style={{ borderColor: "var(--vis-index)", background: "var(--vis-index-soft)" }}
           >
             <div
@@ -175,7 +172,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
               The structure responsible
             </div>
             <div
-              className="mt-1.5 font-mono text-[14px] leading-snug"
+              className="mt-1 font-mono text-[13px] leading-snug"
               style={{ color: "var(--vis-index-text)" }}
             >
               {chapter.structure}
@@ -183,52 +180,52 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        <p className="mt-4 text-[13px] italic leading-relaxed text-faint">
+        <p className="mt-3 text-[12.5px] italic leading-relaxed text-faint">
           In this lab: {chapter.lab}
         </p>
-      </Card>
+      </header>
 
       {/* Interactive mind map panel (client-rendered) */}
       <PartMindMapPanelLoader slug={slug} />
 
-      {/* The Lab Workspace */}
-      <Card tone="raised" padding="lg">
+      <div className="mt-6">
         <LabLoader slug={chapter.slug} />
-      </Card>
+      </div>
 
-      {/* Navigation Cards */}
-      <CardGrid cols={2} gap="md">
+      <nav className="mt-10 flex flex-wrap items-stretch justify-between gap-3 border-t border-edge pt-5">
         {previous ? (
-          <Link href={`/ch/${previous.slug}`} className="block">
-            <Card tone="sunken" padding="md" interactive className="h-full flex flex-col justify-center">
-              <div className="text-[10.5px] uppercase tracking-wider text-faint">
-                ← Chapter {previous.number}
-              </div>
-              <div className="mt-1.5 text-[14px] font-medium text-ink">{previous.title}</div>
-            </Card>
+          <Link
+            href={`/ch/${previous.slug}`}
+            className="group max-w-[46%] rounded-lg border border-edge bg-raised px-3 py-2 transition-colors hover:border-edge-strong"
+          >
+            <div className="text-[10.5px] uppercase tracking-wider text-faint">
+              ← Chapter {previous.number}
+            </div>
+            <div className="mt-0.5 text-[13px] font-medium text-ink">{previous.title}</div>
           </Link>
         ) : (
-          <div />
+          <span />
         )}
-        
         {next ? (
-          <Link href={`/ch/${next.slug}`} className="block">
-            <Card tone="sunken" padding="md" interactive className="h-full flex flex-col justify-center text-right">
-              <div className="text-[10.5px] uppercase tracking-wider text-faint">
-                Chapter {next.number} →
-              </div>
-              <div className="mt-1.5 text-[14px] font-medium text-ink">{next.title}</div>
-            </Card>
+          <Link
+            href={`/ch/${next.slug}`}
+            className="group max-w-[46%] rounded-lg border border-edge bg-raised px-3 py-2 text-right transition-colors hover:border-edge-strong"
+          >
+            <div className="text-[10.5px] uppercase tracking-wider text-faint">
+              Chapter {next.number} →
+            </div>
+            <div className="mt-0.5 text-[13px] font-medium text-ink">{next.title}</div>
           </Link>
         ) : (
-          <Link href="/tests" className="block">
-            <Card tone="sunken" padding="md" interactive className="h-full flex flex-col justify-center text-right">
-              <div className="text-[10.5px] uppercase tracking-wider text-faint">Finish →</div>
-              <div className="mt-1.5 text-[14px] font-medium text-ink">Run the differential tests</div>
-            </Card>
+          <Link
+            href="/tests"
+            className="max-w-[46%] rounded-lg border border-edge bg-raised px-3 py-2 text-right transition-colors hover:border-edge-strong"
+          >
+            <div className="text-[10.5px] uppercase tracking-wider text-faint">Finish →</div>
+            <div className="mt-0.5 text-[13px] font-medium text-ink">Run the differential tests</div>
           </Link>
         )}
-      </CardGrid>
-    </div>
+      </nav>
+    </article>
   );
 }

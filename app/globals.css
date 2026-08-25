@@ -199,7 +199,7 @@ html {
 }
 
 body {
-  background: var(--bg-sunken);
+  background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

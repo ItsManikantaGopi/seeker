@@ -9,7 +9,6 @@
 import { useState } from "react";
 import { MindMap, type MindMapData, type MindMapTone } from "@/components/mind-map";
 import type { Chapter } from "@/lib/chapters";
-import { Card } from "@/components/ui";
 
 interface PartMindMapProps {
   chapter: Chapter;
@@ -72,11 +71,11 @@ export function PartMindMapPanel({ chapter, partChapters }: PartMindMapProps) {
   };
 
   return (
-    <Card tone="raised" padding="md" className="border-dashed">
+    <div className="rounded-xl border border-edge bg-raised shadow-[var(--shadow)]">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between gap-3 text-left"
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
         aria-expanded={open}
       >
         <div>
@@ -141,6 +140,6 @@ export function PartMindMapPanel({ chapter, partChapters }: PartMindMapProps) {
           </p>
         </div>
       )}
-    </Card>
+    </div>
   );
 }
