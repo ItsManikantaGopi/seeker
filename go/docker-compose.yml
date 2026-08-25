@@ -1,0 +1,13 @@
+services:
+  seeker:
+    build: .
+    image: seeker-go:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      # Snapshots written on shutdown land here and survive container removal.
+      - seeker-data:/data
+    restart: unless-stopped
+
+volumes:
+  seeker-data:
