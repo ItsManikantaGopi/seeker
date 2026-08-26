@@ -196,6 +196,13 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 60px;
+}
+
+/* While the JS wheel lerp drives the page, CSS easing would double-ease
+   every per-frame scrollTo. Anchor jumps keep native CSS easing. */
+html[data-smooth-scroll="js"] {
+  scroll-behavior: auto;
 }
 
 body {

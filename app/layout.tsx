@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { Shell } from "@/components/shell";
 
 const inter = Inter({
@@ -28,7 +29,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* Apply the stored theme before paint so there is no flash. */}
         <script
@@ -38,6 +39,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${mono.variable} antialiased`}>
+        <SmoothScroll />
         <Shell>{children}</Shell>
       </body>
     </html>
