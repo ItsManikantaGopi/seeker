@@ -337,10 +337,186 @@ input[type="range"]::-moz-range-thumb {
   animation: strip-slide 0.3s ease-out both;
 }
 
+/* ----------------------------------------------------------------
+   Cinematic layer — editorial film language on the same grey ramp.
+   Motion vocabulary: expo-out rises, focus-pull reveals, light
+   beams, tickers, drifting fields. Hues stay confined to --vis-*.
+   ---------------------------------------------------------------- */
+
+:root {
+  /* The house easing: fast out, long settle. Everything cinematic uses it. */
+  --ease-cine: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-cine: 0.9s;
+}
+
+/* Entrance: rise from below while pulling into focus. Used by the Reveal
+   wrapper and by one-shot entrances that do not need an observer. */
+@keyframes cine-rise {
+  from { opacity: 0; transform: translateY(var(--rise-y, 22px)); filter: blur(6px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+.cine-rise {
+  opacity: 0;
+  animation: cine-rise var(--dur-cine) var(--ease-cine) forwards;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+/* Scroll-triggered reveal: the element waits hidden until JS adds
+   .is-visible (IntersectionObserver), then transitions in with an
+   optional stagger via --reveal-delay. */
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 20px));
+  filter: blur(5px);
+  transition:
+    opacity 0.85s var(--ease-cine),
+    transform 0.85s var(--ease-cine),
+    filter 0.85s var(--ease-cine);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+}
+
+/* Light beam: a soft diagonal stripe of ink sweeping across its box. */
+@keyframes beam-sweep {
+  from { transform: translateX(-130%) skewX(-14deg); }
+  to   { transform: translateX(230%) skewX(-14deg); }
+}
+.beam-sweep {
+  position: absolute;
+  inset: -20% auto -20% 0;
+  width: 34%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--text) 9%, transparent),
+    transparent
+  );
+  animation: beam-sweep var(--beam-dur, 5.5s) var(--ease-cine) infinite;
+  animation-delay: var(--beam-delay, 0s);
+}
+
+/* Marquee ticker: track holds content twice; sliding one full half loops
+   seamlessly. Duration comes from --ticker-dur. */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll var(--ticker-dur, 36s) linear infinite;
+}
+.ticker-mask {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+
+/* Slow vertical drift for ambient floating chips/tokens. */
+@keyframes float-drift {
+  0%, 100% { transform: translateY(calc(var(--drift-amp, 9px) * -1)); }
+  50%      { transform: translateY(var(--drift-amp, 9px)); }
+}
+.float-drift {
+  animation: float-drift var(--drift-dur, 7s) ease-in-out infinite;
+  animation-delay: var(--drift-delay, 0s);
+}
+
+/* Terminal caret. */
+@keyframes caret-blink {
+  0%, 45%  { opacity: 1; }
+  50%, 95% { opacity: 0; }
+}
+.caret-blink {
+  animation: caret-blink 1.05s steps(1, end) infinite;
+}
+
+/* A dot that pulses outward like a signal travelling a wire. Pairs with
+   .flow-march connectors in the pipeline visual. */
+@keyframes signal-cycle {
+  0%   { transform: scale(0.55); opacity: 0.25; }
+  35%  { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.55); opacity: 0.25; }
+}
+.signal-dot {
+  animation: signal-cycle var(--signal-dur, 2.4s) ease-in-out infinite;
+  animation-delay: var(--signal-delay, 0s);
+}
+
+/* Film grain: a tiled feTurbulence noise plate laid over hero sections.
+   Purely decorative, pointer-transparent, barely-there opacity. */
+.film-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+:root[data-theme="dark"] .film-grain {
+  opacity: 0.07;
+  mix-blend-mode: screen;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .film-grain {
+    opacity: 0.07;
+    mix-blend-mode: screen;
+  }
+}
+
+/* Cursor-tracked spotlight for cards. JS writes --mx/--my on mousemove;
+   without them the highlight sits centred and invisible until hover. */
+.spot-card {
+  position: relative;
+}
+.spot-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-cine);
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--spot-color, var(--text)) 7%, transparent),
+    transparent 72%
+  );
+}
+.spot-card:hover::before { opacity: 1; }
+
+/* Giant outlined chapter numeral behind title cards. */
+.watermark {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border);
+  user-select: none;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .pulse, .fade-in, .node-pop, .branch-draw, .flow-march, .node-glow, .strip-slide {
+  .pulse, .fade-in, .node-pop, .branch-draw, .flow-march, .node-glow, .strip-slide,
+  .cine-rise, .beam-sweep, .ticker-track, .float-drift, .caret-blink, .signal-dot {
     animation: none;
   }
+  /* Reveals must not hide content when motion is off. */
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+  .cine-rise { opacity: 1; }
   * { transition-duration: 0.01ms !important; }
 }

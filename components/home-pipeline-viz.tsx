@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import Link from "next/link";
 import type { Chapter } from "@/lib/chapters";
 
@@ -50,8 +50,15 @@ export function HomePipelineViz({ chapters }: { chapters: Chapter[] }) {
 
     return (
       <div>
+        {/* Column header: tone rail + live signal dot. */}
         <div className="mb-3 flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full" style={{ background: color }} />
+          <span className="relative flex h-3.5 w-3.5 items-center justify-center">
+            <span
+              className="signal-dot absolute h-3.5 w-3.5 rounded-full"
+              style={{ background: color, opacity: 0.25, "--signal-dur": "2.8s" } as CSSProperties}
+            />
+            <span className="h-2 w-2 rounded-full" style={{ background: color }} />
+          </span>
           <span className="text-[10.5px] font-semibold uppercase tracking-wider text-faint">{label}</span>
         </div>
         <div className="space-y-1.5">
@@ -63,6 +70,8 @@ export function HomePipelineViz({ chapters }: { chapters: Chapter[] }) {
                   href={stageHref(stage.chapterSlug)}
                   className="block w-full rounded-xl border px-3 py-2.5 text-left transition-all"
                   style={{
+                    borderLeftColor: color,
+                    borderLeftWidth: 2,
                     borderColor: isHov ? color : "var(--border)",
                     background: isHov ? soft : "var(--bg-raised)",
                     boxShadow: isHov
@@ -83,11 +92,20 @@ export function HomePipelineViz({ chapters }: { chapters: Chapter[] }) {
                   </div>
                 </Link>
                 {i < stages.length - 1 && (
-                  <div
-                    className="py-[3px] text-center font-mono text-[10px] transition-colors"
-                    style={{ color: isHov ? color : "var(--text-faint)" }}
-                  >
-                    ↓
+                  /* Connector wire: dashed line with marching dashes; when the
+                     stage below or above is hovered the signal intensifies via
+                     colour, otherwise it stays faint. */
+                  <div className="flex items-center justify-center py-[3px]">
+                    <svg width="10" height="16" viewBox="0 0 10 16" aria-hidden="true">
+                      <line
+                        x1="5" y1="0" x2="5" y2="16"
+                        stroke={isHov ? color : "var(--border-strong)"}
+                        strokeWidth="1.5"
+                        strokeDasharray="3 4"
+                        className="flow-march"
+                      />
+                      <path d="M2 12 L5 15 L8 12" fill="none" stroke={isHov ? color : "var(--border-strong)"} strokeWidth="1.2" strokeLinecap="round" />
+                    </svg>
                   </div>
                 )}
               </div>
@@ -117,10 +135,19 @@ export function HomePipelineViz({ chapters }: { chapters: Chapter[] }) {
         <div className="flex h-full items-center gap-3">
           {activeStage ? (
             <>
-              <span
-                className="h-1.5 w-1.5 shrink-0 rounded-full"
-                style={{ background: activeStage.side === "index" ? "var(--vis-index)" : "var(--vis-query)" }}
-              />
+              <span className="relative flex h-2.5 w-2.5 shrink-0 items-center justify-center">
+                <span
+                  className="signal-dot absolute h-2.5 w-2.5 rounded-full"
+                  style={{
+                    background: activeStage.side === "index" ? "var(--vis-index)" : "var(--vis-query)",
+                    opacity: 0.3,
+                  }}
+                />
+                <span
+                  className="h-1.5 w-1.5 rounded-full"
+                  style={{ background: activeStage.side === "index" ? "var(--vis-index)" : "var(--vis-query)" }}
+                />
+              </span>
               <span className="font-semibold text-[12.5px] text-ink">{activeStage.label}</span>
               <span className="text-[12px] text-muted">{activeStage.question}</span>
               <span

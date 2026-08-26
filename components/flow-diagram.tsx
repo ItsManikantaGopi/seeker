@@ -71,7 +71,12 @@ export function FlowDiagram({
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setMounted(true); }, []);
+  // Deferred one frame so the update is not synchronous inside the effect
+  // (react-hooks lint flags sync setState in effects as cascading renders).
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   const totalW = nodes.length * nodeSpacing + (NODE_W - nodeSpacing);
   const svgW = width ?? totalW + 16;
