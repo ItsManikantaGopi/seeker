@@ -25,10 +25,7 @@ import {
   type MouseEvent,
   type ReactNode,
 } from "react";
-import { analyze, DEFAULT_ANALYZER } from "@/lib/seeker/analyzer";
 import { CORPUS } from "@/lib/seeker/corpus";
-import { demoContext, demoDictionary, demoIndex } from "@/lib/demo";
-import { search } from "@/lib/seeker/query";
 
 // ---------------------------------------------------------------------------
 // Layout primitives
@@ -233,257 +230,391 @@ export function CinemaFrame({
 }
 
 // ---------------------------------------------------------------------------
-// Vignette 1 — TokenRain: the analyzer caught mid-fall
+// Vignette 1 — TokenStreamViz: Step-by-step animated analyzer pipeline
 // ---------------------------------------------------------------------------
 
-const RAIN_TEXT =
-  "Search is data structures all the way down: Kubernetes DEPLOYMENT, rolling updates, " +
-  "cache-aside Redis, BKD point indexes; a fuzzy kubernets still finds the cluster.";
+const RAW_SAMPLE = "Kubernetes DEPLOYMENTS & pods running on redis-cluster_v2!";
 
-/** Analyzed tokens drifting through a frame — chapter 3 as weather. */
-export function TokenRain() {
-  const tokens = useMemo(() => analyze(RAIN_TEXT, DEFAULT_ANALYZER).tokens, []);
+/** An animated step-through of how raw text turns into indexed terms */
+export function TokenStreamViz() {
+  const [step, setStep] = useState(0);
 
-  const chips = useMemo(() => {
-    const seen = new Set<string>();
-    return tokens
-      .filter((t) => {
-        if (seen.has(t.text)) return false;
-        seen.add(t.text);
-        return true;
-      })
-      .slice(0, 16)
-      .map((t, i) => ({
-        text: t.text,
-        kind: t.type,
-        // Deterministic scatter: co-prime multipliers spread values evenly.
-        left: 4 + ((i * 61) % 92),
-        top: 8 + ((i * 37) % 74),
-        amp: 5 + (i % 4) * 3,
-        dur: 6 + (i % 5),
-        delay: (i % 7) * 0.55,
-        amber: i % 4 === 1,
-      }));
-  }, [tokens]);
+  // 4 clear pipeline stages
+  const stages = useMemo(() => [
+    {
+      id: "raw",
+      name: "01 · Raw Input",
+      desc: "Source document text arrives with mixed case, punctuation, and delimiters",
+      items: ["Kubernetes", "DEPLOYMENTS", "&", "pods", "running", "on", "redis-cluster_v2!"],
+      highlight: [0, 1, 6],
+    },
+    {
+      id: "split",
+      name: "02 · Tokenizer & Word Delimiters",
+      desc: "Standard tokenizer splits on whitespace/punctuation, expands 'redis-cluster_v2' into sub-words",
+      items: ["Kubernetes", "DEPLOYMENTS", "pods", "running", "on", "redis", "cluster", "v2"],
+      highlight: [5, 6, 7],
+    },
+    {
+      id: "filter",
+      name: "03 · Lowercase & Stopwords",
+      desc: "Case normalized; English stopwords ('on') filtered out so only searchable terms continue",
+      items: ["kubernetes", "deployments", "pods", "running", "redis", "cluster", "v2"],
+      highlight: [0, 1],
+    },
+    {
+      id: "stem",
+      name: "04 · Porter Stemmer → Final Terms",
+      desc: "Suffixes stripped ('deployments' → 'deploy', 'running' → 'run') so morphological variants match",
+      items: ["kubernet", "deploy", "pod", "run", "redi", "cluster", "v2"],
+      highlight: [0, 1, 2, 3],
+    },
+  ], []);
 
-  return (
-    <div
-      className="relative h-44 overflow-hidden rounded-xl border border-edge bg-sunken"
-      aria-label="Tokens produced by analyzing a sentence"
-      role="img"
-    >
-      <div aria-hidden="true" className="film-grain" />
-      {chips.map((c, i) => (
-        <span
-          key={`${c.text}-${i}`}
-          className={`absolute whitespace-nowrap rounded-md border px-2 py-0.5 font-mono text-[11px] float-drift ${
-            c.amber ? "border-transparent" : "border-edge bg-raised text-muted"
-          }`}
-          style={
-            {
-              left: `${c.left}%`,
-              top: `${c.top}%`,
-              "--drift-amp": `${c.amp}px`,
-              "--drift-dur": `${c.dur}s`,
-              "--drift-delay": `${c.delay}s`,
-              ...(c.amber ? { background: "var(--vis-query-soft)", color: "var(--vis-query-text)" } : {}),
-            } as CSSProperties
-          }
-        >
-          {c.text}
-          <span className="ml-1.5 text-[9px] opacity-60">{c.kind}</span>
-        </span>
-      ))}
-      <div className="absolute bottom-2 left-3 font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
-        analyze(text) → tokens
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Vignette 2 — ScoreRace: BM25 settling into rank order
-// ---------------------------------------------------------------------------
-
-const BAR_TONES = ["var(--bar-accent)", "var(--bar-warn)", "var(--bar-info)", "var(--bar-ok)", "var(--bar-muted)"];
-
-/** A live `match(title, …)` against the demo corpus; bars grow into their
- *  BM25 ranks on mount. */
-export function ScoreRace({ text = "kubernetes deployment" }: { text?: string }) {
-  const hits = useMemo(
-    () =>
-      search(demoContext(), { kind: "match", field: "title", text }, { topK: 5, explain: false }).hits,
-    [text],
-  );
-
-  // Bars start at zero and grow on mount. Under prefers-reduced-motion the
-  // global stylesheet already flattens transitions, so we only need to arm.
-  const [armed, setArmed] = useState(false);
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      // Deferred one frame so the update is not synchronous inside the effect.
-      const raf = window.requestAnimationFrame(() => setArmed(true));
-      return () => window.cancelAnimationFrame(raf);
-    }
-    const id = window.setTimeout(() => setArmed(true), 60);
-    return () => window.clearTimeout(id);
+    const id = setInterval(() => {
+      setStep((s) => (s + 1) % 4);
+    }, 2800);
+    return () => clearInterval(id);
   }, []);
 
-  const max = hits[0]?.score ?? 1;
+  const current = stages[step];
 
   return (
-    <div className="rounded-xl border border-edge bg-raised p-4">
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-        <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-faint">bm25 race</span>
-        <code className="rounded border border-edge bg-code px-1.5 py-0.5 font-mono text-[11px] text-muted">
-          match(title:&quot;{text}&quot;)
-        </code>
+    <div className="rounded-xl border border-edge bg-raised p-3.5 flex flex-col justify-between h-[230px]">
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">
+            analysis chain · stage {step + 1}/4
+          </span>
+          <div className="flex gap-1">
+            {stages.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setStep(i)}
+                aria-label={`Go to stage ${i + 1}`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  step === i ? "w-5 bg-[var(--vis-index)]" : "w-1.5 bg-edge hover:bg-muted"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="font-mono text-[12px] font-semibold text-ink mb-1">
+          {current.name}
+        </div>
+        <p className="text-[11.5px] text-muted leading-tight mb-3 min-h-[30px]">
+          {current.desc}
+        </p>
       </div>
-      <div className="space-y-2">
-        {hits.map((hit, i) => {
-          const title = demoIndex().source(hit.docId)?.title ?? `doc ${hit.docId}`;
-          const pct = Math.max(4, Math.round((hit.score / max) * 100));
-          return (
-            <div key={hit.docId} className="flex items-center gap-2">
-              <span className="w-4 shrink-0 text-right font-mono text-[10px] text-faint">{i + 1}</span>
-              <div className="relative h-6 min-w-0 flex-1 overflow-hidden rounded-md bg-sunken">
-                <div
-                  className="h-full rounded-md"
-                  style={{
-                    width: armed ? `${pct}%` : "0%",
-                    background: BAR_TONES[i % BAR_TONES.length],
-                    transition: `width 0.95s var(--ease-cine) ${i * 110}ms`,
-                  }}
-                />
-                {/* difference blend keeps the label legible over every bar tone
-                    in both themes (light: black fill → white text, dark: white fill → black text) */}
-                <span className="absolute inset-y-0 left-2 flex max-w-full items-center truncate pr-2 font-mono text-[10.5px] text-white mix-blend-difference">
-                  {title}
-                </span>
-              </div>
-              <span className="w-14 shrink-0 text-right font-mono text-[11px] tabular-nums text-muted">
-                {hit.score.toFixed(3)}
+
+      {/* Animated token stream visual */}
+      <div className="rounded-lg border border-edge bg-sunken p-2.5 min-h-[72px] flex items-center">
+        <div className="flex flex-wrap gap-1.5 w-full">
+          {current.items.map((token, i) => {
+            const isHigh = current.highlight.includes(i);
+            return (
+              <span
+                key={`${step}-${token}-${i}`}
+                className="node-pop inline-flex items-center rounded-md border px-2 py-0.5 font-mono text-[11px] transition-all"
+                style={{
+                  animationDelay: `${i * 45}ms`,
+                  borderColor: isHigh ? "var(--vis-index)" : "var(--border)",
+                  backgroundColor: isHigh ? "var(--vis-index-soft)" : "var(--bg-raised)",
+                  color: isHigh ? "var(--vis-index-text)" : "var(--text)",
+                }}
+              >
+                {token}
               </span>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-      <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
-        top {hits.length} of {CORPUS.length} docs · live engine output
+
+      <div className="mt-2 flex items-center justify-between text-[10px] font-mono text-faint border-t border-edge pt-1.5">
+        <span>input: &quot;{RAW_SAMPLE.slice(0, 32)}...&quot;</span>
+        <span className="text-[var(--vis-index-text)] font-semibold">{current.items.length} tokens</span>
       </div>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Vignette 3 — AutomatonOrbit: the dictionary as a starfield, fuzzy hits lit
+// Vignette 2 — PostingsIntersectViz: Step-by-step postings merge & BM25 rank
 // ---------------------------------------------------------------------------
 
-// Canvas geometry for the orbit vignette (module constants keep the memo's
-// dependency list free of derived values).
-const ORBIT_W = 380;
-const ORBIT_H = 250;
-const ORBIT_CX = ORBIT_W / 2;
-const ORBIT_CY = ORBIT_H / 2;
-const ORBIT_RX = 158;
-const ORBIT_RY = 96;
+/** Visualizes how posting lists for multiple query terms intersect & compute scores */
+export function PostingsIntersectViz() {
+  const [activeIdx, setActiveIdx] = useState(0);
 
-/** Quantize so SSR and client serialize identical attribute values — raw
- *  trig output differs in the last decimal across engines and breaks hydration. */
-const quant = (n: number) => Math.round(n * 100) / 100;
+  // Real matching data from Seeker demo
+  const sampleDocs = useMemo(() => [
+    { docId: 0, title: "Kubernetes Deployment Guide", term1: true, term2: true, tf1: 3, tf2: 2, score: 3.103 },
+    { docId: 1, title: "Kubernetes Deployment Rollback", term1: true, term2: true, tf1: 2, tf2: 2, score: 3.103 },
+    { docId: 2, title: "Kubernetes Deployment Service Mesh", term1: true, term2: true, tf1: 1, tf2: 1, score: 2.767 },
+    { docId: 7, title: "Redis Cache Clusters in Prod", term1: false, term2: false, tf1: 0, tf2: 0, score: 0 },
+    { docId: 15, title: "Docker Compose for Local Clusters", term1: false, term2: false, tf1: 0, tf2: 0, score: 0 },
+  ], []);
 
-/** The title vocabulary laid out as an elliptical starfield; terms accepted by
- *  the Levenshtein automaton light up and get labels. */
-export function AutomatonOrbit({
-  term = "kubernets",
-  maxEdits = 2,
-}: {
-  term?: string;
-  maxEdits?: number;
-}) {
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActiveIdx((i) => (i + 1) % sampleDocs.length);
+    }, 2200);
+    return () => clearInterval(id);
+  }, [sampleDocs.length]);
 
-  // Vocabulary positions + automaton verdicts in one memo, so the dependency
-  // list stays honest (the geometry constants live inside it).
-  const { stars, accepted, states, pruned } = useMemo(() => {
-    const dict = demoDictionary("title");
-    const vocab = dict.sortedTerms;
-    const fuzzy = dict.fuzzy(term, { maxEdits });
-    const acceptedSet = new Set(fuzzy.terms);
-    const stars = vocab.map((t, i) => {
-      const angle = -Math.PI / 2 + (i / Math.max(1, vocab.length)) * Math.PI * 2;
-      // Deterministic radial jitter keeps the field from looking mechanical.
-      const jitter = (((i * 37) % 23) - 11) * 0.9;
-      return {
-        term: t,
-        x: quant(ORBIT_CX + Math.cos(angle) * (ORBIT_RX + jitter)),
-        y: quant(ORBIT_CY + Math.sin(angle) * (ORBIT_RY + jitter * 0.55)),
-        hit: acceptedSet.has(t),
-      };
-    });
-    return {
-      stars,
-      accepted: fuzzy.terms,
-      states: fuzzy.automatonStates,
-      pruned: fuzzy.subtreesPruned,
-    };
-  }, [term, maxEdits]);
-
-  const labelled = stars.filter((s) => s.hit);
+  const activeDoc = sampleDocs[activeIdx];
+  const isMatch = activeDoc.term1 && activeDoc.term2;
 
   return (
-    <div className="rounded-xl border border-edge bg-sunken p-3">
-      <svg
-        viewBox={`0 0 ${ORBIT_W} ${ORBIT_H}`}
-        className="block w-full"
-        role="img"
-        aria-label={`Levenshtein automaton for "${term}" intersected with the term dictionary`}
-      >
-        {/* orbit guide */}
-        <ellipse cx={ORBIT_CX} cy={ORBIT_CY} rx={ORBIT_RX} ry={ORBIT_RY} fill="none" stroke="var(--border)" strokeDasharray="2 6" />
-        {/* every term in the vocabulary */}
-        {stars.map((s) =>
-          s.hit ? null : (
-            <circle key={s.term} cx={s.x} cy={s.y} r={2} fill="var(--text-faint)" opacity={0.55} />
-          ),
-        )}
-        {/* accepted terms glow in the query accent */}
-        {stars
-          .filter((s) => s.hit)
-          .map((s, i) => (
-            <g key={s.term} className="node-pop" style={{ animationDelay: `${120 + i * 140}ms` }}>
-              <circle cx={s.x} cy={s.y} r={9} fill="var(--vis-query)" opacity={0.16} className="signal-dot" style={{ "--signal-delay": `${i * 0.45}s` } as CSSProperties} />
-              <circle cx={s.x} cy={s.y} r={3.5} fill="var(--vis-query)" />
-            </g>
-          ))}
-        {/* labels for accepted terms only — the rest stay anonymous stars */}
-        {labelled.map((s) => (
-          <text
-            key={`label-${s.term}`}
-            x={s.x}
-            y={s.y - 12}
-            textAnchor="middle"
-            fontSize={9.5}
-            fontFamily="var(--font-mono)"
-            fill="var(--vis-query-text)"
+    <div className="rounded-xl border border-edge bg-raised p-3.5 flex flex-col justify-between h-[230px]">
+      <div>
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">
+            postings intersection · AND query
+          </span>
+          <code className="rounded border border-edge bg-code px-1.5 py-0.5 font-mono text-[10.5px] text-muted">
+            &quot;kubernetes&quot; AND &quot;deployment&quot;
+          </code>
+        </div>
+        <p className="text-[11.5px] text-muted leading-tight mb-2.5">
+          Iterators step in docId lockstep. Both posting lists must contain the doc for an AND match.
+        </p>
+      </div>
+
+      {/* Posting rows */}
+      <div className="space-y-1.5 rounded-lg border border-edge bg-sunken p-2 font-mono text-[11px]">
+        <div className="flex items-center gap-2">
+          <span className="w-20 text-[10px] text-faint uppercase tracking-wider">kubernetes:</span>
+          <div className="flex gap-1">
+            {[0, 1, 2, 4, 5].map((d) => (
+              <span
+                key={d}
+                className={`rounded px-1.5 py-0.5 text-[10px] transition-all ${
+                  activeDoc.docId === d
+                    ? "bg-[var(--vis-index)] text-white font-bold scale-110"
+                    : "bg-raised border border-edge text-muted"
+                }`}
+              >
+                doc:{d}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="w-20 text-[10px] text-faint uppercase tracking-wider">deployment:</span>
+          <div className="flex gap-1">
+            {[0, 1, 2, 3, 4].map((d) => (
+              <span
+                key={d}
+                className={`rounded px-1.5 py-0.5 text-[10px] transition-all ${
+                  activeDoc.docId === d
+                    ? "bg-[var(--vis-index)] text-white font-bold scale-110"
+                    : "bg-raised border border-edge text-muted"
+                }`}
+              >
+                doc:{d}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Live evaluation panel */}
+      <div className="mt-2 flex items-center justify-between rounded-md border border-edge bg-raised px-2.5 py-1.5 font-mono text-[11px]">
+        <div className="flex items-center gap-2 truncate">
+          <span className={`h-2 w-2 rounded-full ${isMatch ? "bg-emerald-500 animate-pulse" : "bg-zinc-400"}`} />
+          <span className="truncate text-ink">doc {activeDoc.docId} · {activeDoc.title}</span>
+        </div>
+        <div className="shrink-0 text-[10.5px]">
+          {isMatch ? (
+            <span className="font-semibold" style={{ color: "var(--vis-index-text)" }}>
+              BM25: {activeDoc.score.toFixed(3)}
+            </span>
+          ) : (
+            <span className="text-faint">skipped</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Vignette 3 — TriePruningViz: Levenshtein Automaton Trie Walk & Pruning
+// ---------------------------------------------------------------------------
+
+/** Visualizes how a fuzzy search intersects an automaton with a trie and prunes dead branches */
+export function TriePruningViz() {
+  const [step, setStep] = useState(0);
+
+  const explorationSteps = useMemo(() => [
+    {
+      prefix: "k",
+      nodeLabel: "k",
+      state: "d=0 (exact)",
+      pruned: false,
+      accepted: false,
+      desc: "Step 1: 'k' matches query root. Edit distance remains 0.",
+      subtrees: ["ku...", "ka... (kafka)"],
+    },
+    {
+      prefix: "ku",
+      nodeLabel: "ku",
+      state: "d=0 (exact)",
+      pruned: false,
+      accepted: false,
+      desc: "Step 2: Walk 'ku'. Active candidate prefix for 'kubernetes'.",
+      subtrees: ["kube...", "kubernets..."],
+    },
+    {
+      prefix: "ka",
+      nodeLabel: "ka (kafka)",
+      state: "d=2 (threshold)",
+      pruned: true,
+      accepted: false,
+      desc: "Step 3: 'kafka' branch hits distance limit (d > 2) → Subtree PRUNED immediately!",
+      subtrees: ["✕ pruned 12 terms"],
+    },
+    {
+      prefix: "kubernetes",
+      nodeLabel: "kubernetes",
+      state: "d=1 (accepting)",
+      pruned: false,
+      accepted: true,
+      desc: "Step 4: 'kubernetes' reached with 1 edit (transposition) → MATCH ACCEPTED!",
+      subtrees: ["✓ matched doc 0, 1, 2"],
+    },
+  ], []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setStep((s) => (s + 1) % 4);
+    }, 2600);
+    return () => clearInterval(id);
+  }, []);
+
+  const cur = explorationSteps[step];
+
+  return (
+    <div className="rounded-xl border border-edge bg-raised p-3.5 flex flex-col justify-between h-[230px]">
+      <div>
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">
+            automaton trie walk · fuzzy(~2)
+          </span>
+          <code className="rounded border border-edge bg-code px-1.5 py-0.5 font-mono text-[10.5px] text-muted">
+            fuzzy(&quot;kubernets&quot;)
+          </code>
+        </div>
+        <p className="text-[11.5px] text-muted leading-tight mb-2">
+          Shared trie prefixes allow the automaton to eliminate thousands of non-matching terms in one step.
+        </p>
+      </div>
+
+      {/* Trie traversal step diagram */}
+      <div className="rounded-lg border border-edge bg-sunken p-2.5 font-mono text-[11px]">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-faint text-[10px]">CURRENT TRIE NODE:</span>
+          <span
+            className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+              cur.pruned
+                ? "bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/40"
+                : cur.accepted
+                ? "bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/40"
+                : "bg-[var(--vis-query-soft)] text-[var(--vis-query-text)] border border-[var(--vis-query)]"
+            }`}
           >
-            {s.term}
-          </text>
-        ))}
-        {/* centre: the misspelled query */}
-        <rect x={ORBIT_CX - 44} y={ORBIT_CY - 13} width={88} height={26} rx={13} fill="var(--bg-raised)" stroke="var(--border-strong)" />
-        <text x={ORBIT_CX} y={ORBIT_CY + 4} textAnchor="middle" fontSize={11} fontFamily="var(--font-mono)" fill="var(--text)">
-          {term}
-        </text>
-      </svg>
-      <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 px-1 pb-0.5">
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
-          fuzzy(&quot;{term}&quot;, ~{maxEdits})
-        </span>
-        <span className="font-mono text-[10px] text-muted">
-          automaton states {states} · subtrees pruned {pruned} ·{" "}
-          <span style={{ color: "var(--vis-query-text)" }}>{accepted.length} terms accepted</span>
-        </span>
+            {cur.state}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 my-1.5">
+          <div className="px-2 py-1 rounded border border-edge bg-raised font-bold text-ink text-[12px]">
+            /{cur.prefix}
+          </div>
+          <span className="text-faint text-[11px]">→</span>
+          <div className="flex-1 text-[11px] truncate text-muted">
+            {cur.subtrees.join(" · ")}
+          </div>
+        </div>
+      </div>
+
+      {/* Explanation caption */}
+      <div className="mt-2 rounded-md border border-edge bg-raised px-2.5 py-1.5 text-[11px] leading-tight text-ink">
+        <span className="font-semibold text-[var(--vis-query-text)]">Action: </span>
+        {cur.desc}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Vignette 4 — PointIndexRangeViz: 1D / 2D Range & BKD Tree Query Animation
+// ---------------------------------------------------------------------------
+
+/** Visualizes numeric/spatial range searches splitting space instead of full scanning */
+export function PointIndexRangeViz() {
+  const [activeRange, setActiveRange] = useState(0);
+
+  const ranges = useMemo(() => [
+    { label: "price: [100 TO 200]", count: 4, docs: ["doc-1", "doc-8", "doc-16", "doc-22"], pctMin: 25, pctMax: 50 },
+    { label: "price: [200 TO 400]", count: 7, docs: ["doc-3", "doc-5", "doc-11", "doc-14", "+3 more"], pctMin: 50, pctMax: 80 },
+    { label: "price: [0 TO 50]", count: 3, docs: ["doc-0", "doc-9", "doc-15"], pctMin: 0, pctMax: 20 },
+  ], []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActiveRange((r) => (r + 1) % ranges.length);
+    }, 2600);
+    return () => clearInterval(id);
+  }, [ranges.length]);
+
+  const cur = ranges[activeRange];
+
+  return (
+    <div className="rounded-xl border border-edge bg-raised p-3.5 flex flex-col justify-between h-[230px]">
+      <div>
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">
+            point index · numeric bkd
+          </span>
+          <code className="rounded border border-edge bg-code px-1.5 py-0.5 font-mono text-[10.5px] text-muted">
+            {cur.label}
+          </code>
+        </div>
+        <p className="text-[11.5px] text-muted leading-tight mb-2">
+          Numeric ranges don&apos;t scan text. Sorted point leaves isolate matching documents in O(log N) time.
+        </p>
+      </div>
+
+      {/* Interactive 1D range slider visualizer */}
+      <div className="rounded-lg border border-edge bg-sunken p-2.5">
+        <div className="relative h-4 w-full rounded-full bg-raised border border-edge overflow-hidden mb-2">
+          <div
+            className="absolute top-0 bottom-0 bg-[var(--vis-neutral)] opacity-40 transition-all duration-500 rounded"
+            style={{
+              left: `${cur.pctMin}%`,
+              width: `${cur.pctMax - cur.pctMin}%`,
+            }}
+          />
+        </div>
+        <div className="flex justify-between text-[9.5px] font-mono text-faint">
+          <span>$0.00</span>
+          <span>$100.00</span>
+          <span>$200.00</span>
+          <span>$300.00</span>
+          <span>$500.00</span>
+        </div>
+      </div>
+
+      {/* Result feedback */}
+      <div className="mt-2 flex items-center justify-between border-t border-edge pt-1.5 text-[10.5px] font-mono">
+        <span className="text-muted">Matched: {cur.docs.join(", ")}</span>
+        <span className="font-bold text-ink">{cur.count} documents</span>
       </div>
     </div>
   );

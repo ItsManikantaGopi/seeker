@@ -5,14 +5,15 @@ import { CORPUS } from "@/lib/seeker/corpus";
 import { demoIndex } from "@/lib/demo";
 import { HomePipelineViz } from "@/components/home-pipeline-viz";
 import {
-  AutomatonOrbit,
   BeamSweep,
   CorpusTicker,
+  PointIndexRangeViz,
+  PostingsIntersectViz,
   Reveal,
-  ScoreRace,
   SectionKicker,
   Spotlight,
-  TokenRain,
+  TokenStreamViz,
+  TriePruningViz,
   ViewfinderTicks,
 } from "@/components/cinema";
 
@@ -186,66 +187,84 @@ export default function Home() {
       {/* -------------------------------------------- NOW SHOWING — vignettes */}
       <section className="mb-14">
         <Reveal>
-          <SectionKicker tone="var(--vis-query-text)">now showing · three unbroken takes</SectionKicker>
+          <SectionKicker tone="var(--vis-query-text)">now showing · four animated concept breakdowns</SectionKicker>
           <h2 className="mt-2 mb-1 text-[19px] font-semibold tracking-tight text-ink">
-            The engine, caught on film
+            How a search engine actually works under the hood
           </h2>
-          <p className="mb-5 max-w-[62ch] text-[13.5px] leading-relaxed text-muted">
-            Not screenshots — running code. Each take below is produced live from the same library the labs
-            use: analysis, BM25 ranking, fuzzy expansion over the real dictionary.
+          <p className="mb-5 max-w-[68ch] text-[13.5px] leading-relaxed text-muted">
+            Live animated step-throughs of core algorithms and structures. Watch how raw unstructured text
+            is parsed, how postings lists intersect, how automata prune tries, and how range queries work.
           </p>
         </Reveal>
 
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           <Reveal delay={0}>
             <Spotlight className="h-full rounded-xl">
               <figure className="flex h-full flex-col">
                 <figcaption className="mb-2 flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
-                  <span>take 01 · analysis</span>
+                  <span>take 01 · analysis pipeline</span>
                   <span>ch 03</span>
                 </figcaption>
                 <div className="flex-1">
-                  <TokenRain />
+                  <TokenStreamViz />
                 </div>
                 <p className="mt-2 text-[12px] leading-relaxed text-muted">
-                  A sentence goes through the analyzer; every drifting chip is a real token with its type
-                  still attached. Amber chips are the query side of the story.
+                  <strong>Text to Terms:</strong> Step-by-step tokenization, delimiter expansion, case folding,
+                  and stemming before tokens reach inverted index postings.
                 </p>
               </figure>
             </Spotlight>
           </Reveal>
 
-          <Reveal delay={110}>
+          <Reveal delay={100}>
             <Spotlight className="h-full rounded-xl" color="var(--vis-index)">
               <figure className="flex h-full flex-col">
                 <figcaption className="mb-2 flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
-                  <span>take 02 · ranking</span>
-                  <span>ch 08</span>
+                  <span>take 02 · postings intersection & bm25</span>
+                  <span>ch 04 · ch 08</span>
                 </figcaption>
                 <div className="flex-1">
-                  <ScoreRace />
+                  <PostingsIntersectViz />
                 </div>
                 <p className="mt-2 text-[12px] leading-relaxed text-muted">
-                  A live match query settles into BM25 rank order against the {CORPUS.length}-document corpus.
-                  Bar lengths are the actual scores, not an artist&apos;s impression.
+                  <strong>DocId Lockstep & Scoring:</strong> Multi-term AND queries advance iterators across sorted
+                  posting lists and calculate live BM25 saturation scores.
                 </p>
               </figure>
             </Spotlight>
           </Reveal>
 
-          <Reveal delay={220}>
+          <Reveal delay={180}>
             <Spotlight className="h-full rounded-xl" color="var(--vis-query)">
               <figure className="flex h-full flex-col">
                 <figcaption className="mb-2 flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
-                  <span>take 03 · fuzzy</span>
-                  <span>ch 15</span>
+                  <span>take 03 · levenshtein trie pruning</span>
+                  <span>ch 14 · ch 15</span>
                 </figcaption>
                 <div className="flex-1">
-                  <AutomatonOrbit term="kubernets" maxEdits={2} />
+                  <TriePruningViz />
                 </div>
                 <p className="mt-2 text-[12px] leading-relaxed text-muted">
-                  The title dictionary as a starfield. The misspelling lights up every term the Levenshtein
-                  automaton accepts while pruning whole subtrees of the trie.
+                  <strong>Fuzzy Search Without Scanning:</strong> The Levenshtein DFA walks the trie and prunes entire
+                  subtrees the moment edit distance exceeds the max threshold (d &gt; 2).
+                </p>
+              </figure>
+            </Spotlight>
+          </Reveal>
+
+          <Reveal delay={260}>
+            <Spotlight className="h-full rounded-xl" color="var(--vis-neutral)">
+              <figure className="flex h-full flex-col">
+                <figcaption className="mb-2 flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
+                  <span>take 04 · point index & bkd range</span>
+                  <span>ch 20 · ch 22</span>
+                </figcaption>
+                <div className="flex-1">
+                  <PointIndexRangeViz />
+                </div>
+                <p className="mt-2 text-[12px] leading-relaxed text-muted">
+                  <strong>Fast Numeric Retrieval:</strong> Numbers and dates use 1D/2D spatial trees instead of text
+                  terms, isolating target doc ranges in O(log N) time.
                 </p>
               </figure>
             </Spotlight>
