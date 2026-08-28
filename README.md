@@ -15,6 +15,8 @@ npm run dev      # http://localhost:3000
 npm test         # typecheck + the full differential test suite
 ```
 
+> **Go edition:** the same engine, ported chapter-by-chapter to Go as a runnable HTTP server — see [`go/README.md`](go/README.md).
+
 ---
 
 ## The idea

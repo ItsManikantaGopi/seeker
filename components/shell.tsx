@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { CHAPTERS, PARTS, type Chapter } from "@/lib/chapters";
 
 const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII"];
@@ -168,6 +168,41 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+/** Reading-progress rail: a 2px ink line growing along the header's bottom edge. */
+function ScrollProgress() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const el = ref.current;
+      if (!el) return;
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      const p = max > 0 ? Math.min(1, doc.scrollTop / max) : 0;
+      el.style.transform = `scaleX(${p})`;
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-[-1px] h-[2px]">
+      <div ref={ref} className="h-full w-full origin-left" style={{ transform: "scaleX(0)", background: "var(--text)" }} />
+    </div>
+  );
+}
+
 export function Shell({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -202,6 +237,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <ThemeToggle />
           </div>
         </div>
+        <ScrollProgress />
       </header>
 
       <div className="mx-auto flex w-full max-w-[1680px]">

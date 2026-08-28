@@ -143,8 +143,12 @@ export function MindMap({
   const [hovered, setHovered] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Delay render so CSS vars are available
-  useEffect(() => { setMounted(true); }, []);
+  // Delay render so CSS vars are available. Deferred one frame so the update
+  // is not synchronous inside the effect (react-hooks lint rule).
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   const H = Math.round(width * 0.72);
   const cx = width / 2;

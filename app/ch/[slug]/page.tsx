@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { CSSProperties } from "react";
 import { CHAPTERS, chapterBySlug, neighbours, PARTS } from "@/lib/chapters";
 import { LabLoader } from "@/components/labs/loader";
 import { PartMindMapPanelLoader } from "@/components/labs/part-mind-map-loader";
 import type { ConceptStep } from "@/components/part-mind-map";
+import { BeamSweep, SectionKicker, ViewfinderTicks } from "@/components/cinema";
 
 export function generateStaticParams() {
   return CHAPTERS.map((chapter) => ({ slug: chapter.slug }));
@@ -100,30 +102,72 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
   const { previous, next } = neighbours(slug);
   const steps = conceptSteps(chapter.partNumber);
 
+  // Part-toned accents for the title card.
+  const tone =
+    chapter.partNumber <= 2 || (chapter.partNumber >= 6 && chapter.partNumber <= 7)
+      ? "index"
+      : chapter.partNumber <= 5
+        ? "query"
+        : "neutral";
+  const accent = {
+    index: "var(--vis-index)",
+    query: "var(--vis-query)",
+    neutral: "var(--vis-neutral)",
+  }[tone];
+
   return (
     <article className="mx-auto max-w-[1180px] px-4 py-6 lg:px-8 lg:py-8">
-      <header className="mb-5">
-        <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-faint">
-          <span>Part {chapter.partNumber} · {part.title}</span>
-          <span aria-hidden>·</span>
-          <span>Chapter {chapter.number}</span>
+      {/* ------------------------------------------- Title card — the slate */}
+      <header className="relative mb-6 overflow-hidden rounded-xl border border-edge bg-raised shadow-[var(--shadow)]">
+        {/* Ambient band: a part-toned wash across the top of the card. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-24"
+          style={{
+            background:
+              `linear-gradient(180deg, color-mix(in srgb, ${accent} 10%, transparent), transparent)`,
+          }}
+        />
+        <BeamSweep duration={9} />
+        <ViewfinderTicks inset={8} />
+        {/* Giant outlined chapter numeral, bleeding off the right edge. */}
+        <div
+          aria-hidden="true"
+          className="watermark absolute -right-2 top-1/2 -translate-y-1/2 text-[150px] opacity-70 lg:text-[190px]"
+        >
+          {String(chapter.number).padStart(2, "0")}
         </div>
-        <h1 className="text-[26px] font-bold leading-tight tracking-tight text-ink lg:text-[32px]">
-          {chapter.title}
-        </h1>
-        <p className="mt-2 max-w-[70ch] text-[14.5px] leading-relaxed text-muted">
-          {chapter.summary}
-        </p>
 
-        {/* The book's core pairing — the question and its structure — as one quiet line */}
-        <div className="mt-3 max-w-[76ch] rounded-r-lg border-l-[3px] border-l-[var(--accent)] bg-accent-soft px-3 py-2">
-          <p className="text-[12.5px] font-medium leading-relaxed text-accent-text">
-            {chapter.question} Answered by{" "}
-            <code className="font-mono">{chapter.structure}</code>.
+        <div className="relative p-5 lg:p-7">
+          <SectionKicker tone={accent}>
+            part {String(chapter.partNumber).padStart(2, "0")} · {part.title}
+          </SectionKicker>
+          <h1 className="mt-4 max-w-[24ch] text-[27px] font-bold leading-[1.1] tracking-tight text-ink cine-rise lg:text-[34px]" style={{ "--rise-delay": "60ms", "--rise-y": "14px" } as CSSProperties}>
+            <span className="font-mono text-[0.62em] font-semibold text-faint">
+              {String(chapter.number).padStart(2, "0")}{" · "}
+            </span>
+            {chapter.title}
+          </h1>
+          <p
+            className="cine-rise mt-2.5 max-w-[72ch] text-[14.5px] leading-relaxed text-muted"
+            style={{ "--rise-delay": "180ms", "--rise-y": "14px" } as CSSProperties}
+          >
+            {chapter.summary}
           </p>
-          <p className="mt-0.5 text-[12px] leading-relaxed text-accent-text opacity-75">
-            In this lab: {chapter.lab}
-          </p>
+
+          {/* The book's core pairing — the question and its structure — as one quiet line */}
+          <div
+            className="cine-rise mt-4 max-w-[76ch] rounded-r-lg border-l-[3px] bg-accent-soft px-3 py-2"
+            style={{ borderLeftColor: accent, "--rise-delay": "300ms", "--rise-y": "14px" } as CSSProperties}
+          >
+            <p className="text-[12.5px] font-medium leading-relaxed text-accent-text">
+              {chapter.question} Answered by{" "}
+              <code className="font-mono">{chapter.structure}</code>.
+            </p>
+            <p className="mt-0.5 text-[12px] leading-relaxed text-accent-text opacity-75">
+              In this lab: {chapter.lab}
+            </p>
+          </div>
         </div>
       </header>
 
