@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { SeekerEngine, verifyFile } from "@/lib/seeker/segments";
-import { corrupt } from "@/lib/seeker/codec";
-import { Cluster } from "@/lib/seeker/cluster";
-import { CORPUS } from "@/lib/seeker/corpus";
-import type { Query } from "@/lib/seeker/query";
+import { KausEngine, verifyFile } from "@/lib/kaus/segments";
+import { corrupt } from "@/lib/kaus/codec";
+import { Cluster } from "@/lib/kaus/cluster";
+import { CORPUS } from "@/lib/kaus/corpus";
+import type { Query } from "@/lib/kaus/query";
 import {
   Badge,
   Bar,
@@ -58,7 +58,7 @@ const GUARANTEES = [
 
 export function Ch35() {
   const [, force] = useState(0);
-  const [engine] = useState(() => new SeekerEngine());
+  const [engine] = useState(() => new KausEngine());
   const [cursor, setCursor] = useState(0);
   const rerender = useCallback(() => force((n) => n + 1), []);
 
@@ -166,7 +166,7 @@ export function Ch35() {
 
 export function Ch36() {
   const [, force] = useState(0);
-  const [engine, setEngine] = useState(() => new SeekerEngine());
+  const [engine, setEngine] = useState(() => new KausEngine());
   const [crashReport, setCrashReport] = useState<{ lostFromBuffer: number; recoverableFromTranslog: number; lostSegments: string[] } | null>(null);
   const [recoveryReport, setRecoveryReport] = useState<{ replayed: number; verified: string[]; corrupted: string[] } | null>(null);
   const [corruptedFile, setCorruptedFile] = useState<string | null>(null);
@@ -174,7 +174,7 @@ export function Ch36() {
   const rerender = useCallback(() => force((n) => n + 1), []);
 
   const setup = (stage: "buffered" | "refreshed" | "committed") => {
-    const e = new SeekerEngine();
+    const e = new KausEngine();
     e.indexAll(CORPUS.slice(0, 6));
     e.refresh();
     e.commit();
