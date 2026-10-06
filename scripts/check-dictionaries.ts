@@ -4,12 +4,12 @@
  * The sorted term list is the oracle. Trie, DAWG and FST must all agree with it,
  * and automaton intersection over each must agree with brute-force edit distance.
  */
-import { CORPUS } from "../lib/seeker/corpus";
-import { analyzeToTerms, DEFAULT_ANALYZER } from "../lib/seeker/analyzer";
-import { Trie, minimize, dawgAccepts, dawgTerms } from "../lib/seeker/trie";
-import { buildFst, buildOrdinalFst, intersectFstWithAutomaton } from "../lib/seeker/fst";
-import { bruteForceFuzzy } from "../lib/seeker/edit-distance";
-import { buildLevenshteinAutomaton } from "../lib/seeker/levenshtein-automaton";
+import { CORPUS } from "../lib/kaus/corpus";
+import { analyzeToTerms, DEFAULT_ANALYZER } from "../lib/kaus/analyzer";
+import { Trie, minimize, dawgAccepts, dawgTerms } from "../lib/kaus/trie";
+import { buildFst, buildOrdinalFst, intersectFstWithAutomaton } from "../lib/kaus/fst";
+import { bruteForceFuzzy } from "../lib/kaus/edit-distance";
+import { buildLevenshteinAutomaton } from "../lib/kaus/levenshtein-automaton";
 
 let failures = 0;
 function ok(name: string, condition: boolean, detail = "") {
