@@ -4,9 +4,9 @@ import (
 	"reflect"
 	"testing"
 
-	"seeker-go/internal/index"
-	"seeker-go/internal/model"
-	"seeker-go/internal/points"
+	"kaus-go/internal/index"
+	"kaus-go/internal/model"
+	"kaus-go/internal/points"
 )
 
 func buildIX(t *testing.T) *index.Index {

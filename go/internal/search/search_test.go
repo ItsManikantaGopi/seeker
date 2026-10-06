@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"seeker-go/internal/index"
+	"kaus-go/internal/index"
 )
 
 func TestIDFKnownValues(t *testing.T) {

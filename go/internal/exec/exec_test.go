@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"seeker-go/internal/index"
-	"seeker-go/internal/model"
+	"kaus-go/internal/index"
+	"kaus-go/internal/model"
 )
 
 // buildIndex loads a tiny corpus so iterators run against real postings.
