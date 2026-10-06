@@ -1,4 +1,4 @@
-// Command seekerctl is a thin client for smoke-testing seekerd from the
+// Command kausctl is a thin client for smoke-testing kausd from the
 // command line. It exists so chapter 13's verification can be scripted.
 package main
 
@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	server := flag.String("server", "http://localhost:8080", "seekerd base URL")
+	server := flag.String("server", "http://localhost:8080", "kausd base URL")
 	flag.Parse()
 	args := flag.Args()
 	if len(args) < 1 {
@@ -47,11 +47,11 @@ func main() {
 
 func usage() {
 	fmt.Fprintln(os.Stderr, `usage:
-  seekerctl health
-  seekerctl stats
-  seekerctl search [-field:title] kubernetes deployment
-  seekerctl get doc-1
-  seekerctl delete doc-1`)
+  kausctl health
+  kausctl stats
+  kausctl search [-field:title] kubernetes deployment
+  kausctl get doc-1
+  kausctl delete doc-1`)
 	os.Exit(2)
 }
 
@@ -113,6 +113,6 @@ func do(method, url string, body any) {
 }
 
 func fatal(err error) {
-	fmt.Fprintln(os.Stderr, "seekerctl:", err)
+	fmt.Fprintln(os.Stderr, "kausctl:", err)
 	os.Exit(1)
 }

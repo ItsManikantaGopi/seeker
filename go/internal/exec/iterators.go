@@ -5,7 +5,7 @@ package exec
 import (
 	"sort"
 
-	"seeker-go/internal/index"
+	"kaus-go/internal/index"
 )
 
 // Iterator walks one postings list (or a combination of them) in docID order.
