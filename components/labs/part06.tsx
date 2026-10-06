@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Trie, minimize, dawgTerms, type TrieNode } from "@/lib/seeker/trie";
-import { buildFst, buildOrdinalFst, intersectFstWithAutomaton } from "@/lib/seeker/fst";
-import { buildBlockTree } from "@/lib/seeker/blocktree";
-import { buildLevenshteinAutomaton } from "@/lib/seeker/levenshtein-automaton";
-import { bruteForceFuzzy } from "@/lib/seeker/edit-distance";
+import { Trie, minimize, dawgTerms, type TrieNode } from "@/lib/kaus/trie";
+import { buildFst, buildOrdinalFst, intersectFstWithAutomaton } from "@/lib/kaus/fst";
+import { buildBlockTree } from "@/lib/kaus/blocktree";
+import { buildLevenshteinAutomaton } from "@/lib/kaus/levenshtein-automaton";
+import { bruteForceFuzzy } from "@/lib/kaus/edit-distance";
 import { demoDictionary, TOY_TERMS, TOY_SUFFIX_TERMS } from "@/lib/demo";
 import {
   Badge,
