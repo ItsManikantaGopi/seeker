@@ -4,11 +4,11 @@ import { useMemo, useState } from "react";
 import {
   bkdLayout, bkdRangeSearch, buildBkdTree, buildKdTree, kdRangeSearch,
   naiveRangeSearch, type Point2D, type Region,
-} from "@/lib/seeker/kdtree";
-import { naivePointRange, pointRange } from "@/lib/seeker/points";
+} from "@/lib/kaus/kdtree";
+import { naivePointRange, pointRange } from "@/lib/kaus/points";
 import { demoIndex, demoPoints } from "@/lib/demo";
-import { CORPUS } from "@/lib/seeker/corpus";
-import { numberToDate } from "@/lib/seeker/inverted-index";
+import { CORPUS } from "@/lib/kaus/corpus";
+import { numberToDate } from "@/lib/kaus/inverted-index";
 import {
   Badge,
   Callout,
