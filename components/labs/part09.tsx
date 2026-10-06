@@ -3,18 +3,18 @@
 import { useMemo, useState } from "react";
 import {
   compareJoinOrders, exhaustiveTopK, rescore, wandTermFromPostings, wandTopK, type WandTerm,
-} from "@/lib/seeker/planner";
-import { bm25, LUCENE_DEFAULTS } from "@/lib/seeker/bm25";
-import { analyzeCacheability, CACHE_LAYERS, LruCache } from "@/lib/seeker/cache";
+} from "@/lib/kaus/planner";
+import { bm25, LUCENE_DEFAULTS } from "@/lib/kaus/bm25";
+import { analyzeCacheability, CACHE_LAYERS, LruCache } from "@/lib/kaus/cache";
 import {
   CONCURRENCY_TRADEOFFS, DEFAULT_POOL, makeRequestStream, simulatePool, type PoolConfig,
-} from "@/lib/seeker/concurrency";
-import { compileScript, SCRIPT_EXAMPLES, SCRIPT_FUNCTIONS, SCRIPT_VARIABLES } from "@/lib/seeker/script";
-import { summarise } from "@/lib/seeker/observability";
-import { pick, randomSequence } from "@/lib/seeker/random";
+} from "@/lib/kaus/concurrency";
+import { compileScript, SCRIPT_EXAMPLES, SCRIPT_FUNCTIONS, SCRIPT_VARIABLES } from "@/lib/kaus/script";
+import { summarise } from "@/lib/kaus/observability";
+import { pick, randomSequence } from "@/lib/kaus/random";
 import { demoContext, demoIndex } from "@/lib/demo";
-import { collectAll, search, type Query } from "@/lib/seeker/query";
-import { analyzeToTerms, DEFAULT_ANALYZER } from "@/lib/seeker/analyzer";
+import { collectAll, search, type Query } from "@/lib/kaus/query";
+import { analyzeToTerms, DEFAULT_ANALYZER } from "@/lib/kaus/analyzer";
 import {
   Badge,
   Bar,

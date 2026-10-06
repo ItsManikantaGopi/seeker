@@ -84,10 +84,10 @@ const REGISTRY: Record<string, ComponentType> = {
   "capacity-planning": dynamic(() => import("./part12").then((m) => m.Ch39), { loading: Loading, ssr: false }),
   "observability": dynamic(() => import("./part12").then((m) => m.Ch40), { loading: Loading, ssr: false }),
 
-  // Part XIII — The Seeker Project
+  // Part XIII — The Kaus Project
   "implementation-roadmap": dynamic(() => import("./part13").then((m) => m.Ch41), { loading: Loading, ssr: false }),
   "testing-strategy": dynamic(() => import("./part13").then((m) => m.Ch42), { loading: Loading, ssr: false }),
-  "seeker-to-opensearch": dynamic(() => import("./part13").then((m) => m.Ch43), { loading: Loading, ssr: false }),
+  "kaus-to-opensearch": dynamic(() => import("./part13").then((m) => m.Ch43), { loading: Loading, ssr: false }),
 };
 
 export function LabLoader({ slug }: { slug: string }) {

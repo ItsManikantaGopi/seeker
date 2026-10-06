@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { analyze, DEFAULT_ANALYZER, KEYWORD_ANALYZER } from "@/lib/seeker/analyzer";
-import { CORPUS, MAPPING } from "@/lib/seeker/corpus";
+import { analyze, DEFAULT_ANALYZER, KEYWORD_ANALYZER } from "@/lib/kaus/analyzer";
+import { CORPUS, MAPPING } from "@/lib/kaus/corpus";
 import { demoIndex } from "@/lib/demo";
 import {
   Badge,
