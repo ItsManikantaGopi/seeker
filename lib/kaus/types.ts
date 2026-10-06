@@ -1,5 +1,5 @@
 /**
- * Core types shared by every stage of the Seeker engine.
+ * Core types shared by every stage of the Kaus engine.
  *
  * Chapter 2 of the book: a document is a logical record, a field is a named
  * value inside it, and different field types demand different index structures.

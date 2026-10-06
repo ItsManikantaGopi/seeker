@@ -1,10 +1,17 @@
-# Seeker
+# Kaus
 
 A working search engine, built from first principles, with an interactive lab for every chapter of
-*[Seeker — Building a Search Engine from First Principles](docs/seeker-building-a-search-engine.md)*.
+*[Kaus — Building a Search Engine from First Principles](docs/kaus-building-a-search-engine.md)*.
 
 Inverted index, BM25, Levenshtein automata, FSTs, BKD trees, a byte-level segment format, and a cluster you
 can break — all implemented in TypeScript, all running in the browser.
+
+## Why Kaus?
+
+**Kaus** is inspired by the Kaus star names in Sagittarius. The name comes from the Arabic *qaws*, meaning “bow” — a useful metaphor for search: aim a query at the right information.
+
+The project keeps the same first-principles method: build the simple version, discover the bottleneck, then replace one component at a time until the reason for the advanced structure becomes obvious.
+
 
 **Nothing on the site is a recorded result.** Every number is computed on load by the same engine the chapter
 is describing. Change a slider and the arithmetic underneath it changes with you.
@@ -41,7 +48,7 @@ difference:
 
 ## What is actually implemented
 
-`lib/seeker/` is a search engine with no dependency on React or the DOM. It is the same code that runs in the
+`lib/kaus/` is a search engine with no dependency on React or the DOM. It is the same code that runs in the
 Node test scripts and in your browser.
 
 | Chapter | Implementation | File |
@@ -136,7 +143,7 @@ components/
   labs/part01…part13    one lab per chapter, grouped by part, lazily loaded
   ui.tsx                shared primitives
 lib/
-  seeker/               the engine — no React, no DOM, independently testable
+  kaus/               the engine — no React, no DOM, independently testable
   chapters.ts           the table of contents as data
 docs/                   the reference manuscript this is built from
 scripts/                the Node test suites

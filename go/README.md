@@ -1,4 +1,4 @@
-# Seeker in Go
+# Kaus in Go
 
 A from-scratch search engine built as a guided series of chapters — inverted indexes, BM25 ranking, a Levenshtein automaton, numeric/geo point indexes, immutable segments, and an HTTP API. Each chapter page explains the code it ships with, including the bugs found along the way.
 
@@ -17,7 +17,7 @@ A from-scratch search engine built as a guided series of chapters — inverted i
 | [09](docs/chapters/ch09-term-dictionary.md) | Sorted dictionary, trie, bounded expansion | `internal/dict` |
 | [10](docs/chapters/ch10-points.md) | Numeric ranges, KD-tree geo boxes | `internal/points` |
 | [11](docs/chapters/ch11-segments.md) | Segment codec, tombstones, merge | `internal/segment` |
-| [12](docs/chapters/ch12-http-api.md) | HTTP API + seekerd | `internal/api`, `cmd/seekerd` |
+| [12](docs/chapters/ch12-http-api.md) | HTTP API + kausd | `internal/api`, `cmd/kausd` |
 | [13](docs/chapters/ch13-testing.md) | Testing: oracles & differential tests | all `*_test.go` |
 
 ## Quickstart
@@ -29,7 +29,7 @@ Requires Go 1.22+ (module targets the standard library only — no dependencies)
 go test ./...
 
 # start the server seeded with the demo corpus (28 docs)
-go run ./cmd/seekerd -addr :8080 -seed testdata/corpus.json
+go run ./cmd/kausd -addr :8080 -seed testdata/corpus.json
 ```
 
 Then search:
@@ -85,7 +85,7 @@ docker compose up --build
 ## Layout
 
 ```
-cmd/seekerd/      the server binary
+cmd/kausd/      the server binary
 internal/
   model/          documents, mappings, field types        (ch01)
   analyzer/       tokenizer + filters + Porter stemmer    (ch02)
