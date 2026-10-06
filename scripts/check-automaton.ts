@@ -2,8 +2,8 @@
  * Chapter 42's differential test, as a script: the brute-force DP table is the
  * oracle, the automaton is the optimisation. They must agree on every input.
  */
-import { bruteForceFuzzy, levenshtein } from "../lib/seeker/edit-distance";
-import { buildLevenshteinAutomaton, scanWithAutomaton } from "../lib/seeker/levenshtein-automaton";
+import { bruteForceFuzzy, levenshtein } from "../lib/kaus/edit-distance";
+import { buildLevenshteinAutomaton, scanWithAutomaton } from "../lib/kaus/levenshtein-automaton";
 
 const VOCAB = [
   "kubernetes", "kubernets", "kubernetes-deployment", "kubernetes-service",

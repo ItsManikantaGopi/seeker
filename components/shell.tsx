@@ -15,7 +15,7 @@ const EXTRA_LINKS = [
 
 type Theme = "system" | "light" | "dark";
 
-const THEME_EVENT = "seeker-theme-change";
+const THEME_EVENT = "kaus-theme-change";
 
 /**
  * The theme lives on the `<html>` element, put there by an inline script before
@@ -38,10 +38,10 @@ function ThemeToggle() {
   const apply = (next: Theme) => {
     if (next === "system") {
       document.documentElement.removeAttribute("data-theme");
-      localStorage.removeItem("seeker-theme");
+      localStorage.removeItem("kaus-theme");
     } else {
       document.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem("seeker-theme", next);
+      localStorage.setItem("kaus-theme", next);
     }
     window.dispatchEvent(new Event(THEME_EVENT));
   };
@@ -221,7 +221,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </button>
 
           <Link href="/" className="flex items-baseline gap-2">
-            <span className="font-mono text-[15px] font-bold tracking-tight text-ink">SEEKER</span>
+            <span className="font-mono text-[15px] font-bold tracking-tight text-ink">KAUS</span>
             <span className="hidden text-[11.5px] text-faint sm:inline">
               building a search engine from first principles
             </span>
