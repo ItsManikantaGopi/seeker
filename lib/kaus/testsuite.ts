@@ -30,7 +30,7 @@ import { naivePointRange, pointRange } from "./points";
 import { exhaustiveTopK, intersectWithSkipping, intersectWithTrace, wandTopK, type WandTerm } from "./planner";
 import { collectAll, makeSearchContext, search, type Query } from "./query";
 import { compileScript } from "./script";
-import { buildEngine, SeekerEngine, verifyFile } from "./segments";
+import { buildEngine, KausEngine, verifyFile } from "./segments";
 import { Cluster } from "./cluster";
 import { minimize, Trie, dawgTerms } from "./trie";
 
@@ -452,7 +452,7 @@ export function runAllSuites(): TestRunResult {
       check("CRC32 is deterministic", crc32(bytes) === crc32(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8])));
       check("CRC32 changes when a byte flips", crc32(bytes) !== crc32(corrupt(bytes, 3)));
 
-      const engine = new SeekerEngine();
+      const engine = new KausEngine();
       engine.indexAll(CORPUS.slice(0, 4));
       engine.refresh();
       engine.commit();
@@ -493,7 +493,7 @@ export function runAllSuites(): TestRunResult {
       check("the merged index still cannot find the deleted document",
         !engine.search({ kind: "match_all" }, { topK: 100 }).hits.some((h) => h.docKey === victim));
 
-      const crashy = new SeekerEngine();
+      const crashy = new KausEngine();
       crashy.indexAll(CORPUS.slice(0, 6));
       crashy.refresh();
       crashy.commit();

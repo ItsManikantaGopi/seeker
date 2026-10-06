@@ -10,7 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Explanation } from "@/lib/seeker/types";
+import type { Explanation } from "@/lib/kaus/types";
 
 // ---------------------------------------------------------------------------
 // Layout primitives
