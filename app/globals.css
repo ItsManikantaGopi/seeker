@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Seeker design tokens — pure black and white.
+   Kaus design tokens — pure black and white.
 
    There is no hue anywhere in this file. Everything is a value on a single
    grey ramp, which means state can no longer be signalled by colour. It is
@@ -276,21 +276,21 @@ input[type="range"]::-moz-range-thumb {
   outline-offset: 2px;
 }
 
-@keyframes seeker-pulse {
+@keyframes kaus-pulse {
   0% { opacity: 0.35; }
   50% { opacity: 1; }
   100% { opacity: 0.35; }
 }
 .pulse {
-  animation: seeker-pulse 1.4s ease-in-out infinite;
+  animation: kaus-pulse 1.4s ease-in-out infinite;
 }
 
-@keyframes seeker-fade-in {
+@keyframes kaus-fade-in {
   from { opacity: 0; transform: translateY(2px); }
   to { opacity: 1; transform: none; }
 }
 .fade-in {
-  animation: seeker-fade-in 0.18s ease-out;
+  animation: kaus-fade-in 0.18s ease-out;
 }
 
 /* ----------------------------------------------------------------
