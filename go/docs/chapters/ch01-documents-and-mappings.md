@@ -1,6 +1,6 @@
 # Chapter 01 — Documents, Mappings and Field Types
 
-Every search engine starts with the same question: what is a document? In Seeker a document is just an **id plus whatever JSON the user sent** — and a **mapping** decides how each field becomes searchable.
+Every search engine starts with the same question: what is a document? In Kaus a document is just an **id plus whatever JSON the user sent** — and a **mapping** decides how each field becomes searchable.
 
 > Code: `internal/model/document.go`
 

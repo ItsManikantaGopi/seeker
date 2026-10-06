@@ -3,11 +3,11 @@
 import { useMemo, useState } from "react";
 import {
   Cluster, compareShardedToGlobal, hashKey, routeToShard, ROUTING_STRATEGIES,
-} from "@/lib/seeker/cluster";
-import { buildEngine } from "@/lib/seeker/segments";
-import { rescore } from "@/lib/seeker/planner";
-import { CORPUS } from "@/lib/seeker/corpus";
-import type { Query } from "@/lib/seeker/query";
+} from "@/lib/kaus/cluster";
+import { buildEngine } from "@/lib/kaus/segments";
+import { rescore } from "@/lib/kaus/planner";
+import { CORPUS } from "@/lib/kaus/corpus";
+import type { Query } from "@/lib/kaus/query";
 import {
   Badge,
   Bar,
