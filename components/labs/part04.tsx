@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { analyzeToTerms, DEFAULT_ANALYZER, KEYWORD_ANALYZER } from "@/lib/seeker/analyzer";
+import { analyzeToTerms, DEFAULT_ANALYZER, KEYWORD_ANALYZER } from "@/lib/kaus/analyzer";
 
 import { demoContext, demoDictionary, demoIndex } from "@/lib/demo";
-import { collectAll, search, type Query } from "@/lib/seeker/query";
-import { analyzeCacheability } from "@/lib/seeker/cache";
+import { collectAll, search, type Query } from "@/lib/kaus/query";
+import { analyzeCacheability } from "@/lib/kaus/cache";
 import {
   Badge,
   Bar,
