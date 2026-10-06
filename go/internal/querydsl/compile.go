@@ -1,8 +1,8 @@
 package querydsl
 
 import (
-	"seeker-go/internal/dict"
-	"seeker-go/internal/index"
+	"kaus-go/internal/dict"
+	"kaus-go/internal/index"
 )
 
 // dictFromIndex builds a sorted dictionary from one field's vocabulary. The
