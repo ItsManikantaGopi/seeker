@@ -1,8 +1,8 @@
-# Chapter 12 — The HTTP API: seekerd
+# Chapter 12 — The HTTP API: kausd
 
 Eleven chapters of machinery, one thin JSON veneer. The rule that keeps it clean: **handlers decode, delegate, encode** — no business logic lives here.
 
-> Code: `internal/api/server.go`, `cmd/seekerd/main.go`
+> Code: `internal/api/server.go`, `cmd/kausd/main.go`
 
 ## The route table
 
@@ -62,7 +62,7 @@ type Server struct {
 
 One atomic counter per server; `_stats` reads it lock-free. Concurrency correctness belongs to `index.Index`'s RWMutex (ch. 03) — many readers scale, writes serialize.
 
-## seekerd: flags, signals, snapshot
+## kausd: flags, signals, snapshot
 
 ```go
 addr := flag.String("addr", ":8080", "listen address")
@@ -87,7 +87,7 @@ In-flight requests finish (up to 10s), then the deferred snapshot writes every l
 ## Try it
 
 ```bash
-go run ./cmd/seekerd -addr :8080 -seed testdata/corpus.json
+go run ./cmd/kausd -addr :8080 -seed testdata/corpus.json
 
 curl -s localhost:8080/_search -d '{"query":{"match":{"title":"kubernetes"}},"size":3}'
 curl -s localhost:8080/_analyze -d '{"field":"title","text":"Rolling Updates"}'

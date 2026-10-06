@@ -1,13 +1,13 @@
 services:
-  seeker:
+  kaus:
     build: .
-    image: seeker-go:latest
+    image: kaus-go:latest
     ports:
       - "8080:8080"
     volumes:
       # Snapshots written on shutdown land here and survive container removal.
-      - seeker-data:/data
+      - kaus-data:/data
     restart: unless-stopped
 
 volumes:
-  seeker-data:
+  kaus-data:
