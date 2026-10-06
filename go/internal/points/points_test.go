@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"seeker-go/internal/model"
+	"kaus-go/internal/model"
 )
 
 func mkDocs(t *testing.T) []model.Document {
