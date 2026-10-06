@@ -7,8 +7,8 @@ import (
 	"sort"
 	"sync"
 
-	"seeker-go/internal/analyzer"
-	"seeker-go/internal/model"
+	"kaus-go/internal/analyzer"
+	"kaus-go/internal/model"
 )
 
 // Posting is one document's occurrence record for one term in one field.

@@ -10,15 +10,15 @@ import {
   printableAscii,
   toHex,
   type ByteRegion,
-} from "@/lib/seeker/codec";
-import { CORPUS } from "@/lib/seeker/corpus";
+} from "@/lib/kaus/codec";
+import { CORPUS } from "@/lib/kaus/corpus";
 import {
-  SeekerEngine,
+  KausEngine,
   SEGMENT_FORMAT_VERSION,
   verifyFile,
   type Segment,
-} from "@/lib/seeker/segments";
-import { comparePatterns, MappedFile, PAGE_SIZE, PATTERN_NOTES } from "@/lib/seeker/mmap";
+} from "@/lib/kaus/segments";
+import { comparePatterns, MappedFile, PAGE_SIZE, PATTERN_NOTES } from "@/lib/kaus/mmap";
 import { demoIndex } from "@/lib/demo";
 import {
   Badge, Bar, Button, Callout, EmptyState, Grid, KeyValue, Mono, Panel, Segmented,
@@ -32,7 +32,7 @@ import {
 
 function useEngine() {
   const [, force] = useState(0);
-  const [engine] = useState(() => new SeekerEngine({ segmentsPerTier: 3, maxMergeAtOnce: 4 }));
+  const [engine] = useState(() => new KausEngine({ segmentsPerTier: 3, maxMergeAtOnce: 4 }));
   const rerender = useCallback(() => force((n) => n + 1), []);
   return { engine, rerender };
 }
@@ -278,7 +278,7 @@ function HexView({
 
 export function Ch24() {
   const [engine] = useState(() => {
-    const e = new SeekerEngine();
+    const e = new KausEngine();
     e.indexAll(CORPUS.slice(0, 4));
     e.refresh();
     e.commit();
