@@ -13,9 +13,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"seeker-go/internal/engine"
-	"seeker-go/internal/model"
-	"seeker-go/internal/querydsl"
+	"kaus-go/internal/engine"
+	"kaus-go/internal/model"
+	"kaus-go/internal/querydsl"
 )
 
 // Server is the HTTP face of one engine node.
@@ -48,7 +48,7 @@ func (s *Server) Handler() http.Handler {
 // ListenAndServe starts the server; graceful shutdown is the caller's job.
 func (s *Server) ListenAndServe(addr string) error {
 	srv := &http.Server{Addr: addr, Handler: s.Handler(), ReadHeaderTimeout: 5 * time.Second}
-	log.Printf("seekerd listening on %s", addr)
+	log.Printf("kausd listening on %s", addr)
 	return srv.ListenAndServe()
 }
 

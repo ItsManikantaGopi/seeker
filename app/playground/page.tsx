@@ -4,7 +4,7 @@ import { Reveal, SectionKicker, BeamSweep } from "@/components/cinema";
 
 export const metadata = {
   title: "Search playground",
-  description: "The whole Seeker engine on one page: query parsing, execution plan, BM25 explanations and the real work each query does.",
+  description: "The whole Kaus engine on one page: query parsing, execution plan, BM25 explanations and the real work each query does.",
 };
 
 export default function PlaygroundPage() {
