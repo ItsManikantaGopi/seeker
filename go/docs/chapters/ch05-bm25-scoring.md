@@ -1,6 +1,6 @@
 # Chapter 05 — Ranking with BM25
 
-Retrieval answers *which documents match*; ranking answers *which are most useful*. Seeker uses BM25 — still the reference scoring function after 30 years.
+Retrieval answers *which documents match*; ranking answers *which are most useful*. Kaus uses BM25 — still the reference scoring function after 30 years.
 
 > Code: `internal/search/bm25.go`
 
