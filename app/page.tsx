@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { CHAPTERS, PARTS, QUESTION_TO_STRUCTURE, ROADMAP } from "@/lib/chapters";
-import { CORPUS } from "@/lib/seeker/corpus";
+import { CORPUS } from "@/lib/kaus/corpus";
 import { demoIndex } from "@/lib/demo";
 import { HomePipelineViz } from "@/components/home-pipeline-viz";
 import {
@@ -63,7 +63,7 @@ export default function Home() {
 
         <div className="relative">
           <div className="mb-4 font-mono text-[11px] uppercase tracking-[0.22em] text-faint">
-            Seeker · a technical manuscript in motion{" "}
+            Kaus · a technical manuscript in motion{" "}
             <span className="caret-blink" aria-hidden="true">
               ▍
             </span>
@@ -442,7 +442,7 @@ export default function Home() {
 
       <footer className="relative border-t border-edge pt-6 text-[12.5px] leading-relaxed text-faint">
         <p className="mb-2">
-          <strong className="text-muted">Seeker</strong> — building a search engine from first principles.
+          <strong className="text-muted">Kaus</strong> — building a search engine from first principles.
           The goal is not to reproduce Lucene line for line; it is to make Lucene and OpenSearch
           understandable.
         </p>

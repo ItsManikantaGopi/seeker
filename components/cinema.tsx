@@ -25,7 +25,7 @@ import {
   type MouseEvent,
   type ReactNode,
 } from "react";
-import { CORPUS } from "@/lib/seeker/corpus";
+import { CORPUS } from "@/lib/kaus/corpus";
 
 // ---------------------------------------------------------------------------
 // Layout primitives
@@ -349,7 +349,7 @@ export function TokenStreamViz() {
 export function PostingsIntersectViz() {
   const [activeIdx, setActiveIdx] = useState(0);
 
-  // Real matching data from Seeker demo
+  // Real matching data from Kaus demo
   const sampleDocs = useMemo(() => [
     { docId: 0, title: "Kubernetes Deployment Guide", term1: true, term2: true, tf1: 3, tf2: 2, score: 3.103 },
     { docId: 1, title: "Kubernetes Deployment Rollback", term1: true, term2: true, tf1: 2, tf2: 2, score: 3.103 },

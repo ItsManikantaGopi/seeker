@@ -1,3 +1,3 @@
-module seeker-go
+module kaus-go
 
 go 1.26

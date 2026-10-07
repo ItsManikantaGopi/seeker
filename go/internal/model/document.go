@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-// FieldType enumerates the kinds of values Seeker knows how to index.
+// FieldType enumerates the kinds of values Kaus knows how to index.
 type FieldType string
 
 const (
@@ -46,7 +46,7 @@ func (m Mapping) Type(field string) FieldType {
 	return FieldKeyword
 }
 
-// DefaultMapping mirrors lib/seeker/corpus.ts MAPPING: two analyzed text
+// DefaultMapping mirrors lib/kaus/corpus.ts MAPPING: two analyzed text
 // fields, keyword identity fields, numerics, a date and coordinates.
 func DefaultMapping() Mapping {
 	return Mapping{

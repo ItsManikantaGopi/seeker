@@ -18,8 +18,8 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Seeker — building a search engine from first principles",
-    template: "%s · Seeker",
+    default: "Kaus — building a search engine from first principles",
+    template: "%s · Kaus",
   },
   description:
     "A working search engine you can take apart: inverted index, BM25, Levenshtein automata, FSTs, BKD trees, segments, shards — one interactive lab per chapter.",
@@ -34,7 +34,7 @@ export default function RootLayout({
         {/* Apply the stored theme before paint so there is no flash. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('seeker-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t)}}catch(e){}`,
+            __html: `try{var t=localStorage.getItem('kaus-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t)}}catch(e){}`,
           }}
         />
       </head>

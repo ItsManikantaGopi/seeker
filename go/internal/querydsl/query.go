@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"strings"
 
-	"seeker-go/internal/exec"
-	"seeker-go/internal/index"
-	"seeker-go/internal/points"
-	"seeker-go/internal/search"
+	"kaus-go/internal/exec"
+	"kaus-go/internal/index"
+	"kaus-go/internal/points"
+	"kaus-go/internal/search"
 )
 
 // Query is the AST every clause decodes into.

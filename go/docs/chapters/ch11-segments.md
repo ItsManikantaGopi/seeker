@@ -1,6 +1,6 @@
 # Chapter 11 — Segments: Bytes, Checksums, Tombstones, Merges
 
-Everything so far lives in memory. A restart must not lose it. Seeker's storage model is Lucene's, simplified to its essence: **immutable segment files + tombstones + merges**.
+Everything so far lives in memory. A restart must not lose it. Kaus's storage model is Lucene's, simplified to its essence: **immutable segment files + tombstones + merges**.
 
 > Code: `internal/segment/segment.go`
 

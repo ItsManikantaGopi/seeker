@@ -1,4 +1,4 @@
-BINARY := seekerd
+BINARY := kausd
 ADDR   := :8080
 BASE   := localhost:8080
 CORPUS := testdata/corpus.json
@@ -8,10 +8,10 @@ CORPUS := testdata/corpus.json
 all: check
 
 build:
-	go build -o $(BINARY) ./cmd/seekerd
+	go build -o $(BINARY) ./cmd/kausd
 
 run:
-	go run ./cmd/seekerd -addr $(ADDR) -seed $(CORPUS)
+	go run ./cmd/kausd -addr $(ADDR) -seed $(CORPUS)
 
 test:
 	go test ./...
@@ -37,7 +37,7 @@ smoke: ## curl the running server; expects seeded demo corpus
 	curl -sf $(BASE)/_search -d '{"query":{"range":{"price":{"gte":100,"lte":200}}},"size":50}' | head -c 400; echo
 
 docker-build:
-	docker build -t seeker-go:latest .
+	docker build -t kaus-go:latest .
 
 up:
 	docker compose up --build -d

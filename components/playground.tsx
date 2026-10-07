@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { LUCENE_DEFAULTS, type Bm25Params } from "@/lib/seeker/bm25";
-import { EXAMPLE_QUERIES, parseQueryString } from "@/lib/seeker/parser";
-import { describeQuery, search, type PlanNode } from "@/lib/seeker/query";
+import { LUCENE_DEFAULTS, type Bm25Params } from "@/lib/kaus/bm25";
+import { EXAMPLE_QUERIES, parseQueryString } from "@/lib/kaus/parser";
+import { describeQuery, search, type PlanNode } from "@/lib/kaus/query";
 import { demoContext, demoIndex } from "@/lib/demo";
 import {
   Badge,

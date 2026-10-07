@@ -5,8 +5,8 @@ package search
 import (
 	"math"
 
-	"seeker-go/internal/exec"
-	"seeker-go/internal/index"
+	"kaus-go/internal/exec"
+	"kaus-go/internal/index"
 )
 
 // BM25 holds the two dials from the book: k1 controls how quickly term

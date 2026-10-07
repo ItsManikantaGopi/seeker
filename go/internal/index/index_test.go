@@ -3,7 +3,7 @@ package index
 import (
 	"testing"
 
-	"seeker-go/internal/model"
+	"kaus-go/internal/model"
 )
 
 func doc(id, title, body string, tags ...string) model.Document {

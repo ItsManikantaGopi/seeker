@@ -6,16 +6,16 @@
  * is built on first use and then cached for the life of the page.
  */
 
-import { analyzerFor, CORPUS } from "./seeker/corpus";
-import { buildIndex, type InvertedIndex } from "./seeker/inverted-index";
-import { makeSearchContext, type SearchContext } from "./seeker/query";
-import { buildEngine, type SeekerEngine } from "./seeker/segments";
-import { TermDictionary } from "./seeker/term-dictionary";
-import type { Point2D } from "./seeker/kdtree";
+import { analyzerFor, CORPUS } from "./kaus/corpus";
+import { buildIndex, type InvertedIndex } from "./kaus/inverted-index";
+import { makeSearchContext, type SearchContext } from "./kaus/query";
+import { buildEngine, type KausEngine } from "./kaus/segments";
+import { TermDictionary } from "./kaus/term-dictionary";
+import type { Point2D } from "./kaus/kdtree";
 
 let indexCache: InvertedIndex | null = null;
 let contextCache: SearchContext | null = null;
-let engineCache: SeekerEngine | null = null;
+let engineCache: KausEngine | null = null;
 const dictionaryCache = new Map<string, TermDictionary>();
 
 export function demoIndex(): InvertedIndex {
@@ -29,7 +29,7 @@ export function demoContext(): SearchContext {
 }
 
 /** A multi-segment engine, so segment-aware labs have something to look at. */
-export function demoEngine(): SeekerEngine {
+export function demoEngine(): KausEngine {
   if (!engineCache) engineCache = buildEngine(CORPUS, { docsPerSegment: 7 });
   return engineCache;
 }

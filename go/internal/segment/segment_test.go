@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"seeker-go/internal/model"
+	"kaus-go/internal/model"
 )
 
 func writeFile(path string, data []byte) error {

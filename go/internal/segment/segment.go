@@ -16,7 +16,7 @@ import (
 	"sort"
 	"strings"
 
-	"seeker-go/internal/model"
+	"kaus-go/internal/model"
 )
 
 // Format constants: magic bytes, a version, a body, a checksum, a footer.

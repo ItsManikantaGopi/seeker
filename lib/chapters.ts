@@ -3,7 +3,7 @@
  *
  * Every chapter carries the two things the book keeps returning to: the question
  * being asked, and the data structure responsible for answering it. That pairing
- * is the Seeker Principle, so it belongs on every page rather than in a single
+ * is the Kaus Principle, so it belongs on every page rather than in a single
  * table at the front.
  */
 
@@ -41,7 +41,7 @@ export const PARTS: Part[] = [
   { number: 10, title: "Distributed Search", blurb: "One index becomes many, and coordination becomes the hard part." },
   { number: 11, title: "Cluster & Operations", blurb: "Refresh, flush and commit are three different promises. Failure is part of the architecture." },
   { number: 12, title: "Production Engineering", blurb: "Optimise in order, size from the workload, and measure the percentiles users actually feel." },
-  { number: 13, title: "The Seeker Project", blurb: "The build order, the testing strategy, and the map back to Lucene and OpenSearch." },
+  { number: 13, title: "The Kaus Project", blurb: "The build order, the testing strategy, and the map back to Lucene and OpenSearch." },
 ];
 
 export const CHAPTERS: Chapter[] = [
@@ -382,8 +382,8 @@ export const CHAPTERS: Chapter[] = [
     lab: "Run the real differential test suite in the browser, against the real engine on this site.",
   },
   {
-    number: 43, slug: "seeker-to-opensearch", partNumber: 13,
-    title: "From Seeker to OpenSearch",
+    number: 43, slug: "kaus-to-opensearch", partNumber: 13,
+    title: "From Kaus to OpenSearch",
     summary: "Every structure here has a name in Lucene. The mapping is the point of the whole exercise.",
     question: "What is this called in the real thing?",
     structure: "The complete architecture",
@@ -424,20 +424,20 @@ export const QUESTION_TO_STRUCTURE: { question: string; structure: string; chapt
 ];
 
 /** Chapter 43's mapping table. */
-export const SEEKER_TO_LUCENE: { seeker: string; lucene: string; chapter: number }[] = [
-  { seeker: "Analyzer", lucene: "analysis chain", chapter: 3 },
-  { seeker: "term → docs", lucene: "postings", chapter: 4 },
-  { seeker: "sorted terms", lucene: "term dictionary", chapter: 16 },
-  { seeker: "trie / automaton", lucene: "FST / term index", chapter: 18 },
-  { seeker: "term blocks", lucene: "BlockTree", chapter: 19 },
-  { seeker: "point tree", lucene: "BKD", chapter: 22 },
-  { seeker: "segment", lucene: "Lucene segment", chapter: 23 },
-  { seeker: "BM25", lucene: "BM25Similarity", chapter: 8 },
-  { seeker: "match / term / bool", lucene: "Query DSL", chapter: 11 },
-  { seeker: "fuzzy", lucene: "FuzzyQuery", chapter: 15 },
-  { seeker: "script", lucene: "Painless", chapter: 30 },
-  { seeker: "shards", lucene: "distributed partitions", chapter: 31 },
-  { seeker: "replicas", lucene: "shard copies", chapter: 32 },
+export const KAUS_TO_LUCENE: { kaus: string; lucene: string; chapter: number }[] = [
+  { kaus: "Analyzer", lucene: "analysis chain", chapter: 3 },
+  { kaus: "term → docs", lucene: "postings", chapter: 4 },
+  { kaus: "sorted terms", lucene: "term dictionary", chapter: 16 },
+  { kaus: "trie / automaton", lucene: "FST / term index", chapter: 18 },
+  { kaus: "term blocks", lucene: "BlockTree", chapter: 19 },
+  { kaus: "point tree", lucene: "BKD", chapter: 22 },
+  { kaus: "segment", lucene: "Lucene segment", chapter: 23 },
+  { kaus: "BM25", lucene: "BM25Similarity", chapter: 8 },
+  { kaus: "match / term / bool", lucene: "Query DSL", chapter: 11 },
+  { kaus: "fuzzy", lucene: "FuzzyQuery", chapter: 15 },
+  { kaus: "script", lucene: "Painless", chapter: 30 },
+  { kaus: "shards", lucene: "distributed partitions", chapter: 31 },
+  { kaus: "replicas", lucene: "shard copies", chapter: 32 },
 ];
 
 /** Chapter 41's staged build. */

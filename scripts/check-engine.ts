@@ -7,20 +7,20 @@
  * Reference implementations are kept deliberately naive: full scans, hash sets,
  * DP tables. They are the oracle, so they are allowed to be slow.
  */
-import { analyzeToTerms, DEFAULT_ANALYZER, ENGLISH_ANALYZER } from "../lib/seeker/analyzer";
-import { bm25, idf, LUCENE_DEFAULTS } from "../lib/seeker/bm25";
-import { crc32, decodePostings, encodePostings, analyzeGaps, bitPack, bitUnpack, gapDecode, gapEncode } from "../lib/seeker/codec";
-import { BM25_EXAMPLE_CORPUS, CORPUS, GOLDEN_CORPUS, analyzerFor } from "../lib/seeker/corpus";
-import { buildIndex, naiveScan } from "../lib/seeker/inverted-index";
-import { buildBkdTree, buildKdTree, bkdRangeSearch, kdRangeSearch, naiveRangeSearch, type Point2D } from "../lib/seeker/kdtree";
-import { parseQueryString, EXAMPLE_QUERIES } from "../lib/seeker/parser";
-import { naivePointRange, pointRange } from "../lib/seeker/points";
-import { collectAll, makeSearchContext, search, type Query } from "../lib/seeker/query";
-import { exhaustiveTopK, intersectWithTrace, intersectWithSkipping, wandTopK, type WandTerm } from "../lib/seeker/planner";
-import { compileScript } from "../lib/seeker/script";
-import { buildEngine, SeekerEngine, verifyFile } from "../lib/seeker/segments";
-import { Cluster } from "../lib/seeker/cluster";
-import { corrupt } from "../lib/seeker/codec";
+import { analyzeToTerms, DEFAULT_ANALYZER, ENGLISH_ANALYZER } from "../lib/kaus/analyzer";
+import { bm25, idf, LUCENE_DEFAULTS } from "../lib/kaus/bm25";
+import { crc32, decodePostings, encodePostings, analyzeGaps, bitPack, bitUnpack, gapDecode, gapEncode } from "../lib/kaus/codec";
+import { BM25_EXAMPLE_CORPUS, CORPUS, GOLDEN_CORPUS, analyzerFor } from "../lib/kaus/corpus";
+import { buildIndex, naiveScan } from "../lib/kaus/inverted-index";
+import { buildBkdTree, buildKdTree, bkdRangeSearch, kdRangeSearch, naiveRangeSearch, type Point2D } from "../lib/kaus/kdtree";
+import { parseQueryString, EXAMPLE_QUERIES } from "../lib/kaus/parser";
+import { naivePointRange, pointRange } from "../lib/kaus/points";
+import { collectAll, makeSearchContext, search, type Query } from "../lib/kaus/query";
+import { exhaustiveTopK, intersectWithTrace, intersectWithSkipping, wandTopK, type WandTerm } from "../lib/kaus/planner";
+import { compileScript } from "../lib/kaus/script";
+import { buildEngine, KausEngine, verifyFile } from "../lib/kaus/segments";
+import { Cluster } from "../lib/kaus/cluster";
+import { corrupt } from "../lib/kaus/codec";
 
 let failures = 0;
 let checks = 0;
@@ -345,7 +345,7 @@ section("Differential: codec round-trips");
 section("Segments: refresh, flush, commit, merge, recover");
 // ===========================================================================
 {
-  const engine = new SeekerEngine({ segmentsPerTier: 3, maxMergeAtOnce: 4 });
+  const engine = new KausEngine({ segmentsPerTier: 3, maxMergeAtOnce: 4 });
   engine.index(CORPUS[0]);
   engine.index(CORPUS[1]);
   ok("buffered writes are not searchable", engine.visibleDocCount === 0);
@@ -408,7 +408,7 @@ section("Segments: refresh, flush, commit, merge, recover");
   eq("segment layout does not change which documents match", [...a].sort(), [...b].sort());
 
   // Crash and recovery.
-  const crashy = new SeekerEngine();
+  const crashy = new KausEngine();
   crashy.indexAll(CORPUS.slice(0, 6));
   crashy.refresh();
   crashy.commit();

@@ -1,14 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { analyzeToTerms, DEFAULT_ANALYZER } from "@/lib/seeker/analyzer";
-import { CORPUS } from "@/lib/seeker/corpus";
-import { naiveScan } from "@/lib/seeker/inverted-index";
-import { intersectWithSkipping, intersectWithTrace } from "@/lib/seeker/planner";
+import { analyzeToTerms, DEFAULT_ANALYZER } from "@/lib/kaus/analyzer";
+import { CORPUS } from "@/lib/kaus/corpus";
+import { naiveScan } from "@/lib/kaus/inverted-index";
+import { intersectWithSkipping, intersectWithTrace } from "@/lib/kaus/planner";
 import { demoIndex, demoContext } from "@/lib/demo";
-import { collectAll, search, type PlanNode } from "@/lib/seeker/query";
-import { parseQueryString } from "@/lib/seeker/parser";
-import { analyzeGaps } from "@/lib/seeker/codec";
+import { collectAll, search, type PlanNode } from "@/lib/kaus/query";
+import { parseQueryString } from "@/lib/kaus/parser";
+import { analyzeGaps } from "@/lib/kaus/codec";
 import {
   Badge,
   Button,

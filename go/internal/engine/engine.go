@@ -9,11 +9,11 @@ import (
 	"sort"
 	"time"
 
-	"seeker-go/internal/index"
-	"seeker-go/internal/model"
-	"seeker-go/internal/points"
-	"seeker-go/internal/querydsl"
-	"seeker-go/internal/search"
+	"kaus-go/internal/index"
+	"kaus-go/internal/model"
+	"kaus-go/internal/points"
+	"kaus-go/internal/querydsl"
+	"kaus-go/internal/search"
 )
 
 // SearchHit is one result row.
@@ -152,7 +152,7 @@ func (e *Engine) DefaultAnalyzerName(field string) string {
 	return "keyword"
 }
 
-// SeedCorpus loads the demo corpus JSON exported from lib/seeker/corpus.ts.
+// SeedCorpus loads the demo corpus JSON exported from lib/kaus/corpus.ts.
 func (e *Engine) SeedCorpus(corpusJSON []byte) error {
 	var raw []map[string]any
 	if err := json.Unmarshal(corpusJSON, &raw); err != nil {

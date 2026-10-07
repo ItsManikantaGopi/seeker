@@ -1,4 +1,4 @@
-# SEEKER
+# KAUS
 
 # Building a Search Engine from First Principles
 
@@ -10,7 +10,7 @@
 
 ## About This Book
 
-Seeker is a from-first-principles guide to understanding how a production search engine can be built.
+Kaus is a from-first-principles guide to understanding how a production search engine can be built.
 
 It deliberately starts with simple structures:
 
@@ -122,11 +122,11 @@ The goal is to make Lucene and OpenSearch understandable.
 39. Capacity Planning
 40. Observability & Failure Modes
 
-## Part XIII — The Seeker Project
+## Part XIII — The Kaus Project
 
 41. Implementation Roadmap
 42. Testing Strategy
-43. From Seeker to OpenSearch
+43. From Kaus to OpenSearch
 
 ---
 
@@ -2606,7 +2606,7 @@ This is especially powerful for:
 
 ---
 
-# Part XIII — The Seeker Project
+# Part XIII — The Kaus Project
 
 # 41. Implementation Roadmap
 
@@ -2714,11 +2714,11 @@ Optimized = compressed iterator
 
 ---
 
-# 43. From Seeker to OpenSearch
+# 43. From Kaus to OpenSearch
 
 The mental mapping is:
 
-| Seeker | Lucene/OpenSearch |
+| Kaus | Lucene/OpenSearch |
 |---|---|
 | Analyzer | analysis chain |
 | term → docs | postings |
@@ -2955,7 +2955,7 @@ Production BKD adds:
 
 ---
 
-# Appendix D — Minimal Seeker API
+# Appendix D — Minimal Kaus API
 
 A useful architecture could expose:
 
@@ -3058,7 +3058,7 @@ That is what makes the architecture extensible.
 
 ---
 
-# The Seeker Principle
+# The Kaus Principle
 
 > **When a search engine feels magical, find the question it is answering and identify the data structure responsible for that question.**
 
@@ -3100,6 +3100,6 @@ Official sites:
 
 ---
 
-**SEEKER — Building a Search Engine from First Principles**
+**KAUS — Building a Search Engine from First Principles**
 
 **Technical manuscript • 2026**

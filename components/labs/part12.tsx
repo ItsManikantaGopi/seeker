@@ -5,10 +5,10 @@ import {
   DEFAULT_CAPACITY, formatBytes as formatCapacityBytes, histogram, METRIC_CATALOGUE,
   OPTIMISATION_ORDER, planCapacity, summarise, SYMPTOM_TABLE, syntheticLatencies,
   type CapacityInputs,
-} from "@/lib/seeker/observability";
+} from "@/lib/kaus/observability";
 import { demoContext } from "@/lib/demo";
-import { search } from "@/lib/seeker/query";
-import { parseQueryString } from "@/lib/seeker/parser";
+import { search } from "@/lib/kaus/query";
+import { parseQueryString } from "@/lib/kaus/parser";
 import {
   Badge,
   Bar,

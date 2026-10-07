@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"seeker-go/internal/engine"
+	"kaus-go/internal/engine"
 )
 
 func newTestServer(t *testing.T) (*httptest.Server, *engine.Engine) {

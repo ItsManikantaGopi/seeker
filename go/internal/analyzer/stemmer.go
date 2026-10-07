@@ -3,7 +3,7 @@ package analyzer
 import "strings"
 
 // Stem implements the Porter stemming algorithm (Porter, 1980), the same
-// algorithm lib/seeker/stemmer.ts uses. It reduces "deployment" to "deploy"
+// algorithm lib/kaus/stemmer.ts uses. It reduces "deployment" to "deploy"
 // and "networking" to "network" so morphological variants share postings.
 func Stem(word string) string {
 	if len(word) <= 2 {

@@ -52,7 +52,7 @@ Note the semantics carefully — this variant forbids editing a region after tra
 
 ## Why fuzziness=1 misses `kubernetes→kubernet`
 
-Count the edits: delete `s`, delete `e` — **two deletions**. Intuition says "one typo" because the words look alike, but distance counts operations, not vibes. This is why Seeker's default fuzzy budget is 2, and why the demo corpus's misspelled title needs `fuzziness: 2` to surface. Chapter 13's smoke test encodes this expectation explicitly.
+Count the edits: delete `s`, delete `e` — **two deletions**. Intuition says "one typo" because the words look alike, but distance counts operations, not vibes. This is why Kaus's default fuzzy budget is 2, and why the demo corpus's misspelled title needs `fuzziness: 2` to surface. Chapter 13's smoke test encodes this expectation explicitly.
 
 ## Testing the oracle itself
 

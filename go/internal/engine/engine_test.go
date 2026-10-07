@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"seeker-go/internal/querydsl"
+	"kaus-go/internal/querydsl"
 )
 
 // newSeeded loads the real demo corpus exported from the TypeScript edition.

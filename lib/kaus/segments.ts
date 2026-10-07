@@ -111,7 +111,7 @@ function newIndex(): InvertedIndex {
   return new InvertedIndex((field) => analyzerFor(field));
 }
 
-export class SeekerEngine {
+export class KausEngine {
   private tick = 0;
   private nextSegmentNumber = 0;
   private commitGeneration = 0;
@@ -716,8 +716,8 @@ export function verifyFile(file: VirtualFile): {
 export function buildEngine(
   sources: SourceDoc[],
   options: { docsPerSegment?: number; commit?: boolean; policy?: MergePolicy } = {},
-): SeekerEngine {
-  const engine = new SeekerEngine(options.policy ?? DEFAULT_MERGE_POLICY);
+): KausEngine {
+  const engine = new KausEngine(options.policy ?? DEFAULT_MERGE_POLICY);
   const perSegment = options.docsPerSegment ?? sources.length;
   sources.forEach((source, i) => {
     engine.index(source);

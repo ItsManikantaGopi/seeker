@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"seeker-go/internal/fuzzy"
+	"kaus-go/internal/fuzzy"
 )
 
 // Dictionary is a sorted, deduplicated list of terms.

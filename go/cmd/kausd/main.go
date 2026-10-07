@@ -1,4 +1,4 @@
-// Command seekerd is the search server: it loads (or seeds) the corpus,
+// Command kausd is the search server: it loads (or seeds) the corpus,
 // serves the REST API, and shuts down gracefully on SIGINT/SIGTERM.
 package main
 
@@ -15,9 +15,9 @@ import (
 	"syscall"
 	"time"
 
-	"seeker-go/internal/api"
-	"seeker-go/internal/engine"
-	"seeker-go/internal/model"
+	"kaus-go/internal/api"
+	"kaus-go/internal/engine"
+	"kaus-go/internal/model"
 )
 
 func main() {
@@ -61,7 +61,7 @@ func main() {
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
-		log.Printf("seekerd listening on %s", *addr)
+		log.Printf("kausd listening on %s", *addr)
 		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("serve: %v", err)
 		}

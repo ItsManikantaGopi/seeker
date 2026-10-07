@@ -3,12 +3,12 @@
 import { useMemo, useState } from "react";
 import {
   bm25, bm25Explanation, idf, idfCurve, LUCENE_DEFAULTS, saturationCurve, type Bm25Params,
-} from "@/lib/seeker/bm25";
-import { BM25_EXAMPLE_CORPUS, analyzerFor } from "@/lib/seeker/corpus";
-import { buildIndex } from "@/lib/seeker/inverted-index";
+} from "@/lib/kaus/bm25";
+import { BM25_EXAMPLE_CORPUS, analyzerFor } from "@/lib/kaus/corpus";
+import { buildIndex } from "@/lib/kaus/inverted-index";
 import { demoContext, demoIndex } from "@/lib/demo";
-import { collectAll, makeSearchContext, search } from "@/lib/seeker/query";
-import { analyzeToTerms, DEFAULT_ANALYZER } from "@/lib/seeker/analyzer";
+import { collectAll, makeSearchContext, search } from "@/lib/kaus/query";
+import { analyzeToTerms, DEFAULT_ANALYZER } from "@/lib/kaus/analyzer";
 import {
   Badge,
   Bar,

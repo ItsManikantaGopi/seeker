@@ -4,12 +4,12 @@ import { useMemo, useState } from "react";
 import {
   ANALYZER_PRESETS, analyze, DEFAULT_ANALYZER, KEYWORD_ANALYZER,
   type AnalyzerConfig, type CharFilterName, type StemmerName, type TokenizerName,
-} from "@/lib/seeker/analyzer";
-import { MAPPING } from "@/lib/seeker/corpus";
-import { CORPUS } from "@/lib/seeker/corpus";
+} from "@/lib/kaus/analyzer";
+import { MAPPING } from "@/lib/kaus/corpus";
+import { CORPUS } from "@/lib/kaus/corpus";
 import { demoContext, demoIndex } from "@/lib/demo";
-import { parseQueryString } from "@/lib/seeker/parser";
-import { search } from "@/lib/seeker/query";
+import { parseQueryString } from "@/lib/kaus/parser";
+import { search } from "@/lib/kaus/query";
 import { CHAPTERS, QUESTION_TO_STRUCTURE } from "@/lib/chapters";
 import {
   Badge, Bar, Button, Callout, EmptyState, Grid, KeyValue, Mono, Panel, Segmented,

@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CHAPTERS, PRODUCTION_CHECKLIST, ROADMAP, SEEKER_TO_LUCENE } from "@/lib/chapters";
-import { runAllSuites, type TestRunResult } from "@/lib/seeker/testsuite";
+import { CHAPTERS, PRODUCTION_CHECKLIST, ROADMAP, KAUS_TO_LUCENE } from "@/lib/chapters";
+import { runAllSuites, type TestRunResult } from "@/lib/kaus/testsuite";
 import { demoContext, demoIndex } from "@/lib/demo";
-import { parseQueryString } from "@/lib/seeker/parser";
-import { search } from "@/lib/seeker/query";
+import { parseQueryString } from "@/lib/kaus/parser";
+import { search } from "@/lib/kaus/query";
 import {
   Badge,
   Bar,
@@ -288,7 +288,7 @@ kubernetes AND service → D3
 }
 
 // ===========================================================================
-// Chapter 43 — from Seeker to OpenSearch
+// Chapter 43 — from Kaus to OpenSearch
 // ===========================================================================
 
 const ARCHITECTURE: { id: string; label: string; lucene: string; chapter: number; note: string }[] = [
@@ -391,10 +391,10 @@ export function Ch43() {
       </Panel>
 
       <Panel title="The mental mapping" subtitle="Every structure in this book has a name in Lucene. That mapping is the point of the whole exercise." tone="sunken">
-        <Table head={["Seeker", "Lucene / OpenSearch", ""]}>
-          {SEEKER_TO_LUCENE.map((row) => (
-            <Tr key={row.seeker}>
-              <Td mono>{row.seeker}</Td>
+        <Table head={["Kaus", "Lucene / OpenSearch", ""]}>
+          {KAUS_TO_LUCENE.map((row) => (
+            <Tr key={row.kaus}>
+              <Td mono>{row.kaus}</Td>
               <Td mono tone="accent">{row.lucene}</Td>
               <Td align="right">
                 <Link href={chapterHref(row.chapter)} className="text-[11.5px] text-muted underline underline-offset-2 hover:text-ink">
@@ -406,7 +406,7 @@ export function Ch43() {
         </Table>
       </Panel>
 
-      <Panel title="The Seeker Principle">
+      <Panel title="The Kaus Principle">
         <Stack gap={3}>
           <Callout tone="accent">
             When a search engine feels magical, find the question it is answering and identify the data

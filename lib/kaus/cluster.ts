@@ -2,7 +2,7 @@
  * Shards, replicas and distributed search (chapters 31 to 34, 36 and 37).
  *
  * A shard is not a special object. It is an entire search index that happens to
- * hold part of the data — the same `SeekerEngine` from chapter 23, several times
+ * hold part of the data — the same `KausEngine` from chapter 23, several times
  * over. Everything genuinely new here is coordination:
  *
  *   routing        which shard owns a document
@@ -16,7 +16,7 @@
  * the phase split exists.
  */
 
-import { SeekerEngine, type EngineHit } from "./segments";
+import { KausEngine, type EngineHit } from "./segments";
 import type { Query, SearchOptions } from "./query";
 import { mergeExecStats, newExecStats, type ExecStats, type SourceDoc } from "./types";
 
@@ -113,7 +113,7 @@ function sourceBytes(source: SourceDoc): number {
 
 export class Cluster {
   readonly nodes: ClusterNode[] = [];
-  readonly shards: SeekerEngine[] = [];
+  readonly shards: KausEngine[] = [];
   copies: ShardCopy[] = [];
   readonly events: ClusterEvent[] = [];
   private tick = 0;
@@ -125,7 +125,7 @@ export class Cluster {
       this.nodes.push({ id: `node-${i + 1}`, name: `node-${i + 1}`, state: "up" });
     }
     for (let s = 0; s < config.shardCount; s++) {
-      this.shards.push(new SeekerEngine());
+      this.shards.push(new KausEngine());
     }
     this.allocate();
   }

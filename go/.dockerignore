@@ -1,6 +1,6 @@
 data/
 docs/
 probe/
-seekerd
+kausd
 *.test
 .DS_Store

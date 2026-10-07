@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"sort"
 
-	"seeker-go/internal/model"
+	"kaus-go/internal/model"
 )
 
 // PointIndex maps numeric field values to document ids, kept sorted for

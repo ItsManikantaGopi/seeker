@@ -1,13 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { bruteForceFuzzy, levenshteinTable, type EditOp } from "@/lib/seeker/edit-distance";
+import { bruteForceFuzzy, levenshteinTable, type EditOp } from "@/lib/kaus/edit-distance";
 import {
   ANY_OTHER, buildLevenshteinAutomaton, scanWithAutomaton,
-} from "@/lib/seeker/levenshtein-automaton";
+} from "@/lib/kaus/levenshtein-automaton";
 import { demoContext, demoDictionary, demoIndex } from "@/lib/demo";
-import { search } from "@/lib/seeker/query";
-import { autoFuzziness } from "@/lib/seeker/term-dictionary";
+import { search } from "@/lib/kaus/query";
+import { autoFuzziness } from "@/lib/kaus/term-dictionary";
 import {
   Badge,
   Bar,
